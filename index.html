@@ -1,0 +1,1234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TradePocket">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>TradePocket</title>
+<meta name="description" content="Offline stock trading course: beginner to pro, with quizzes, a paper-trading simulator, calculators, glossary and flashcards.">
+<style>
+:root{
+  --bg:#f5f7fb; --panel:#ffffff; --panel2:#eef1f7; --text:#18202e; --muted:#5d6b82; --line:#dde3ee;
+  --accent:#2563eb; --accent2:#1d4ed8; --up:#16a34a; --down:#dc2626; --warn:#d97706;
+  --l1:#16a34a; --l2:#2563eb; --l3:#9333ea; --l4:#ea580c;
+  --shadow:0 1px 3px rgba(20,30,60,.08),0 4px 16px rgba(20,30,60,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1117; --panel:#161b24; --panel2:#1e2532; --text:#e6ebf3; --muted:#93a0b5; --line:#2a3242;
+    --accent:#4f8cff; --accent2:#3b78f0; --up:#22c55e; --down:#f05252; --warn:#f59e0b;
+    --l1:#22c55e; --l2:#4f8cff; --l3:#b77cff; --l4:#ff8a3d; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1117; --panel:#161b24; --panel2:#1e2532; --text:#e6ebf3; --muted:#93a0b5; --line:#2a3242;
+  --accent:#4f8cff; --accent2:#3b78f0; --up:#22c55e; --down:#f05252; --warn:#f59e0b;
+  --l1:#22c55e; --l2:#4f8cff; --l3:#b77cff; --l4:#ff8a3d; --shadow:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+input,select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+.app{display:flex;min-height:100vh}
+nav.side{width:220px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;padding:4px 10px 16px}
+.brand .logo{width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:#fff}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;border:0;background:none;color:var(--muted);text-align:left;width:100%}
+.nav-btn:hover{background:var(--panel2);color:var(--text)}
+.nav-btn.active{background:var(--panel2);color:var(--text);font-weight:600}
+.nav-btn svg{width:18px;height:18px;flex-shrink:0}
+.side .spacer{flex:1}
+.theme-btn{font-size:13px}
+main{flex:1;min-width:0;padding:28px 32px 80px;max-width:1100px}
+h1{font-size:26px;margin:0 0 6px;line-height:1.25}
+h2{font-size:20px;margin:28px 0 10px}
+h3{font-size:16px;margin:20px 0 6px}
+.sub{color:var(--muted);margin:0 0 20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.stat .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .k{color:var(--muted);font-size:13px}
+.bar{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 14px;border-radius:8px;font-weight:600}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent2)}
+.btn.up{background:var(--up);border-color:var(--up);color:#fff}
+.btn.down{background:var(--down);border-color:var(--down);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600;background:var(--panel2);color:var(--muted)}
+.level-head{display:flex;align-items:center;gap:12px;margin:30px 0 12px}
+.level-badge{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:700}
+.lesson-list{display:grid;gap:8px}
+.lesson-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;cursor:pointer;color:var(--text);text-align:left;width:100%}
+.lesson-item:hover{border-color:var(--accent)}
+.lesson-item .num{width:28px;height:28px;border-radius:50%;background:var(--panel2);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0}
+.lesson-item.done .num{background:var(--up);color:#fff}
+.lesson-item .t{flex:1;min-width:0}
+.lesson-item .m{color:var(--muted);font-size:13px}
+article.lesson{max-width:760px}
+article.lesson p,article.lesson li{color:var(--text)}
+article.lesson .callout{border-left:4px solid var(--accent);background:var(--panel2);padding:12px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+article.lesson .callout.warn{border-color:var(--warn)}
+article.lesson .callout.good{border-color:var(--up)}
+article.lesson table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+article.lesson th,article.lesson td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+article.lesson th{background:var(--panel2)}
+.formula{font-family:ui-monospace,Consolas,monospace;background:var(--panel2);padding:10px 12px;border-radius:8px;margin:10px 0;overflow-x:auto}
+.keys{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-top:22px}
+.keys h3{margin-top:0}
+.quiz .q{margin:18px 0 8px;font-weight:600}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;margin:6px 0;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{border-color:var(--up);background:color-mix(in srgb,var(--up) 14%,var(--panel))}
+.opt.wrong{border-color:var(--down);background:color-mix(in srgb,var(--down) 14%,var(--panel))}
+.opt:disabled{cursor:default}
+.explain{font-size:14px;color:var(--muted);padding:4px 2px}
+.lesson-nav{display:flex;justify-content:space-between;gap:10px;margin-top:28px;flex-wrap:wrap}
+svg.diagram{max-width:100%;height:auto;display:block;margin:12px auto}
+svg.diagram text{fill:var(--text);font-size:12px;font-family:inherit}
+.sim-wrap{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:14px}
+.chart-box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;position:relative}
+canvas{display:block;width:100%}
+.kv{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;border-bottom:1px dashed var(--line)}
+.kv span:last-child{font-weight:600;font-variant-numeric:tabular-nums}
+.pos{color:var(--up)} .neg{color:var(--down)}
+.log{max-height:180px;overflow:auto;font-size:13px;font-family:ui-monospace,Consolas,monospace}
+.log div{padding:2px 0;border-bottom:1px solid var(--line)}
+label.f{display:block;font-size:13px;color:var(--muted);margin:8px 0 3px}
+.result{margin-top:14px;padding:12px;border-radius:8px;background:var(--panel2)}
+.result b{font-size:20px}
+.gl-item{padding:12px 0;border-bottom:1px solid var(--line)}
+.gl-item b{display:block}
+.flash{perspective:1000px;max-width:520px;margin:0 auto;height:260px;cursor:pointer}
+.flash-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flash.flipped .flash-inner{transform:rotateY(180deg)}
+.flash-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;box-shadow:var(--shadow)}
+.flash-face.back{transform:rotateY(180deg);font-size:15px}
+.flash-face.front{font-size:24px;font-weight:700}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tabs .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer}
+.toggle input{width:auto}
+.disclaimer{font-size:12.5px;color:var(--muted);margin-top:30px}
+.mob-nav{display:none}
+@media (max-width:900px){
+  .sim-wrap{grid-template-columns:1fr}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  nav.side{display:none}
+  main{padding:18px 16px 90px}
+  .g2{grid-template-columns:1fr}
+  .mob-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);z-index:10;justify-content:space-around;padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
+  .mob-nav button{background:none;border:0;color:var(--muted);display:flex;flex-direction:column;align-items:center;font-size:10.5px;gap:2px;padding:4px 6px}
+  .mob-nav button.active{color:var(--accent)}
+  .mob-nav svg{width:20px;height:20px}
+  h1{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="side" id="sideNav">
+    <div class="brand"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg></div>TradePocket</div>
+  </nav>
+  <main id="view"></main>
+</div>
+<div class="mob-nav" id="mobNav"></div>
+
+<script>
+/* =========================================================
+   CONTENT: levels, lessons, quizzes
+   ========================================================= */
+const LEVELS = [
+{ id:'L1', name:'Beginner', tag:'Foundations', color:'var(--l1)', lessons:[
+{ id:'b1', title:'What is a stock?', mins:6, body:`
+<p>A <b>stock</b> (also called a share or equity) is a small piece of ownership in a company. If a company has 1,000,000 shares and you own 1,000, you own 0.1% of that business.</p>
+<h3>Why do companies sell stock?</h3>
+<p>To raise money without borrowing. When a company first sells shares to the public it is called an <b>IPO</b> (Initial Public Offering). After that, shares trade between investors on an exchange; the company does not receive money from those later trades.</p>
+<h3>How do you make money from stocks?</h3>
+<ul>
+<li><b>Capital gains</b> &mdash; you sell the share for more than you paid.</li>
+<li><b>Dividends</b> &mdash; some companies pay out part of their profits to shareholders, usually quarterly.</li>
+</ul>
+<h3>Why do prices move?</h3>
+<p>In the short term, price moves because of <b>supply and demand</b>: more eager buyers than sellers pushes price up, and vice versa. In the long term, price tends to follow the company's <b>earnings and growth</b>.</p>
+<div class="callout"><b>Common vs preferred:</b> Common stock usually gives voting rights. Preferred stock usually has no vote but gets dividends paid first.</div>
+<div class="callout warn">Owning a stock means sharing in the risk. If the company fails, the share can go to zero.</div>`,
+keys:['A share = partial ownership of a company','Profit comes from price gains and dividends','Short term: supply & demand. Long term: earnings'],
+quiz:[
+{q:'What does owning a stock represent?',o:['A loan to the company','Partial ownership of the company','A guaranteed interest payment','A contract to buy the company later'],a:1,e:'A share is a slice of ownership (equity), not a loan.'},
+{q:'When does a company receive money from selling its shares?',o:['Every time the stock is traded','Only at the IPO or a new share offering','When the price goes up','Never'],a:1,e:'After the IPO, trades are between investors; the company is not a party to them.'},
+{q:'Which is a way stock investors earn money?',o:['Dividends','Coupon payments','Fixed interest','Premiums'],a:0,e:'Dividends and capital gains are the two sources of stock returns.'}
+]},
+{ id:'b2', title:'How the stock market works', mins:7, body:`
+<p>The <b>stock market</b> is the network of exchanges where shares are bought and sold. Examples: NYSE and Nasdaq (USA), LSE (UK), Tokyo Stock Exchange, the Philippine Stock Exchange (PSE).</p>
+<h3>The players</h3>
+<ul>
+<li><b>Exchange</b> &mdash; the marketplace that matches buy and sell orders.</li>
+<li><b>Broker</b> &mdash; the company/app you use to send orders to the exchange. You cannot trade on an exchange directly.</li>
+<li><b>Market makers</b> &mdash; firms that constantly quote buy and sell prices, providing liquidity.</li>
+<li><b>Retail vs institutional traders</b> &mdash; individuals like you vs funds, banks and pension funds that move huge amounts.</li>
+</ul>
+<h3>Indexes</h3>
+<p>An <b>index</b> tracks a basket of stocks to show how the market is doing: S&amp;P 500 (500 large US companies), Nasdaq Composite (tech-heavy), Dow Jones (30 big US companies), PSEi (30 Philippine companies). An <b>ETF</b> is a fund you can trade like a stock that often tracks an index.</p>
+<h3>Market hours &amp; settlement</h3>
+<p>Exchanges have set trading hours, often with pre-market and after-hours sessions that have thinner volume and wider spreads. After you buy, the trade <b>settles</b> (shares and cash officially swap) a day or two later &mdash; many markets now use T+1 or T+2.</p>
+<h3>Bull vs bear</h3>
+<p>A <b>bull market</b> is a sustained rise; a <b>bear market</b> is commonly defined as a fall of 20% or more from a recent high. A <b>correction</b> is a 10&ndash;20% drop.</p>`,
+keys:['Brokers send your orders to exchanges','Indexes measure the overall market; ETFs let you trade them','Bull = rising, bear = falling 20%+'],
+quiz:[
+{q:'What is the role of a broker?',o:['To set the stock price','To send your orders to the market','To guarantee profits','To issue new shares'],a:1,e:'Retail traders reach the exchange through a broker.'},
+{q:'A bear market is commonly defined as a decline of at least…',o:['5%','10%','20%','50%'],a:2,e:'20% from the recent high is the usual definition; 10–20% is called a correction.'},
+{q:'What is an ETF?',o:['A type of bond','A fund that trades like a stock, often tracking an index','A government savings account','A broker fee'],a:1,e:'Exchange-Traded Funds trade on exchanges and frequently track indexes.'}
+]},
+{ id:'b3', title:'Bid, ask & order types', mins:8, body:`
+<h3>Bid, ask and spread</h3>
+<p>The <b>bid</b> is the highest price someone is willing to pay right now. The <b>ask</b> (or offer) is the lowest price someone will sell for. The gap is the <b>spread</b>.</p>
+<div class="formula">Bid 49.98 &nbsp;|&nbsp; Ask 50.02 &nbsp;→&nbsp; Spread = 0.04</div>
+<p>When you buy "at market" you usually pay the ask; when you sell you usually get the bid. Popular, liquid stocks have tight spreads; small, thinly traded stocks can have wide spreads, which is a hidden cost.</p>
+<h3>Main order types</h3>
+<table>
+<tr><th>Order</th><th>What it does</th><th>Risk</th></tr>
+<tr><td><b>Market</b></td><td>Buy/sell immediately at the best available price</td><td>Price can be worse than expected (slippage)</td></tr>
+<tr><td><b>Limit</b></td><td>Buy at or below / sell at or above your price</td><td>May never fill</td></tr>
+<tr><td><b>Stop (stop-loss)</b></td><td>Becomes a market order once price hits the stop</td><td>Can fill far below stop in a fast drop or gap</td></tr>
+<tr><td><b>Stop-limit</b></td><td>Becomes a limit order once stop is hit</td><td>May not fill at all if price gaps through</td></tr>
+<tr><td><b>Trailing stop</b></td><td>Stop that follows price up by a set amount or %</td><td>Can be triggered by normal noise if too tight</td></tr>
+</table>
+<h3>Time in force</h3>
+<p><b>Day</b> orders expire at the close. <b>GTC</b> (good-till-cancelled) stays open until filled or cancelled (brokers often cap this at some days/months).</p>
+<div class="callout good"><b>Habit to build:</b> Use limit orders for entries in less liquid stocks, and always know where your stop-loss is <i>before</i> you enter.</div>`,
+keys:['Buy at the ask, sell at the bid; the spread is a cost','Market = fast, uncertain price. Limit = exact price, uncertain fill','Stops protect you but can slip in gaps'],
+quiz:[
+{q:'The bid is 20.10 and the ask is 20.15. If you place a market BUY, you will most likely pay…',o:['20.10','20.15','20.125','Any price you want'],a:1,e:'Market buys take the best ask.'},
+{q:'Which order guarantees your price but not your fill?',o:['Market order','Limit order','Stop order','Trailing stop'],a:1,e:'A limit order never executes worse than your price, but may never execute.'},
+{q:'A stock gaps down overnight below your stop-loss. Your stop (market) order will…',o:['Fill exactly at your stop price','Not fill at all','Fill at the next available price, likely below your stop','Be cancelled by the exchange'],a:2,e:'Stop orders become market orders; in a gap they fill at the first available price.'}
+]},
+{ id:'b4', title:'Reading a stock quote', mins:6, body:`
+<p>When you look up a stock you see a block of numbers. Here is what they mean:</p>
+<table>
+<tr><th>Field</th><th>Meaning</th></tr>
+<tr><td>Ticker</td><td>Short code for the company (e.g. AAPL, MSFT)</td></tr>
+<tr><td>Last / Price</td><td>Price of the most recent trade</td></tr>
+<tr><td>Change / %</td><td>Move versus the previous close</td></tr>
+<tr><td>Open / High / Low / Close (OHLC)</td><td>First, highest, lowest and last price for the period</td></tr>
+<tr><td>Volume</td><td>Number of shares traded in the period</td></tr>
+<tr><td>Avg volume</td><td>Typical daily volume (often 30-day or 3-month average)</td></tr>
+<tr><td>Market cap</td><td>Price × shares outstanding = total company value</td></tr>
+<tr><td>52-week high/low</td><td>Price range over the last year</td></tr>
+<tr><td>P/E</td><td>Price ÷ earnings per share (valuation)</td></tr>
+<tr><td>Dividend yield</td><td>Annual dividend ÷ price</td></tr>
+</table>
+<div class="formula">Market cap = 150 × 2,000,000,000 shares = $300 billion</div>
+<h3>Size categories (rough guide)</h3>
+<p><b>Large cap</b> &gt; $10B &nbsp;•&nbsp; <b>Mid cap</b> $2B&ndash;$10B &nbsp;•&nbsp; <b>Small cap</b> $300M&ndash;$2B &nbsp;•&nbsp; <b>Micro/penny</b> below that. Smaller companies usually move more and carry more risk.</p>
+<div class="callout">Volume that is much higher than average tells you something important is happening &mdash; news, earnings, or big players moving in or out.</div>`,
+keys:['OHLC + volume describe each period','Market cap = price × shares outstanding','Unusual volume = unusual interest'],
+quiz:[
+{q:'A company has 500 million shares at $40. What is its market cap?',o:['$2 billion','$20 billion','$200 billion','$540 million'],a:1,e:'500,000,000 × 40 = 20,000,000,000.'},
+{q:'What does "volume" measure?',o:['How much the price moved','Number of shares traded','Number of shareholders','The company\'s revenue'],a:1,e:'Volume is the count of shares that changed hands.'},
+{q:'Dividend yield is calculated as…',o:['Price ÷ dividend','Annual dividend ÷ price','EPS ÷ price','Dividend × shares'],a:1,e:'Yield = annual dividend divided by the current price.'}
+]},
+{ id:'b5', title:'Investing vs trading styles', mins:6, body:`
+<p>Both buy and sell stocks, but they differ in <b>time horizon</b> and <b>method</b>.</p>
+<table>
+<tr><th>Style</th><th>Holding time</th><th>Main tools</th><th>Time needed</th></tr>
+<tr><td><b>Long-term investing</b></td><td>Years</td><td>Fundamentals, valuation, diversification</td><td>Low</td></tr>
+<tr><td><b>Position trading</b></td><td>Weeks–months</td><td>Trends, fundamentals + charts</td><td>Low–medium</td></tr>
+<tr><td><b>Swing trading</b></td><td>Days–weeks</td><td>Chart patterns, indicators</td><td>Medium</td></tr>
+<tr><td><b>Day trading</b></td><td>Minutes–hours, flat by close</td><td>Intraday charts, volume, level 2</td><td>High (full attention)</td></tr>
+<tr><td><b>Scalping</b></td><td>Seconds–minutes</td><td>Order flow, very tight execution</td><td>Very high</td></tr>
+</table>
+<div class="callout warn">Shorter time frames mean more trades, more costs and more noise. Studies of retail day traders consistently find that most lose money over time. Beginners usually do better starting with longer time frames.</div>
+<p>Some markets and brokers have special rules for frequent day trading (for example, minimum account balances for margin day trading in the US). Always check your own broker's rules.</p>
+<h3>Which is right for you?</h3>
+<p>Choose based on your schedule, personality, and capital &mdash; not on which looks most exciting. Many people combine a long-term investing core with a small "trading" account for learning.</p>`,
+keys:['Style = time horizon + method','Shorter time frames = more noise, costs and stress','Pick a style that fits your life'],
+quiz:[
+{q:'A trader who holds positions for a few days to a few weeks is a…',o:['Scalper','Day trader','Swing trader','Buy-and-hold investor'],a:2,e:'Swing traders aim to capture "swings" lasting days to weeks.'},
+{q:'Day traders typically…',o:['Hold positions overnight for weeks','Close positions before the market closes','Only use fundamentals','Trade once a month'],a:1,e:'Day trading means being flat by the close.'},
+{q:'Why do very short time frames tend to be harder for beginners?',o:['Prices don\'t move','More noise, more trades and higher costs','Brokers forbid them','There is no volume'],a:1,e:'Noise and costs add up quickly at short time frames.'}
+]},
+{ id:'b6', title:'Risk basics & diversification', mins:7, body:`
+<p>The first job of a trader is not to make money &mdash; it is to <b>not lose too much</b>. Losses hurt more than gains help because of the math of recovery:</p>
+<table>
+<tr><th>Loss</th><th>Gain needed to get back to even</th></tr>
+<tr><td>10%</td><td>11.1%</td></tr><tr><td>25%</td><td>33.3%</td></tr><tr><td>50%</td><td>100%</td></tr><tr><td>75%</td><td>300%</td></tr><tr><td>90%</td><td>900%</td></tr>
+</table>
+<div class="formula">Gain needed = 1 ÷ (1 − loss) − 1</div>
+<h3>Types of risk</h3>
+<ul>
+<li><b>Company risk</b> &mdash; one business has bad news. Reduced by diversification.</li>
+<li><b>Market risk</b> &mdash; the whole market falls. Cannot be diversified away within stocks.</li>
+<li><b>Liquidity risk</b> &mdash; you can't exit at a fair price.</li>
+<li><b>Leverage risk</b> &mdash; borrowed money magnifies losses.</li>
+</ul>
+<h3>Diversification</h3>
+<p>Spreading money across many companies, sectors (and asset classes) means no single disaster can wreck you. Owning 5 tech stocks is <i>not</i> very diversified &mdash; they tend to move together (they are <b>correlated</b>).</p>
+<div class="callout good"><b>Golden rules:</b> Only trade money you can afford to lose. Have an emergency fund first. Decide your maximum loss <i>before</i> you enter any trade.</div>`,
+keys:['Losses need bigger gains to recover','Diversify across uncorrelated holdings','Know your max loss before entering'],
+quiz:[
+{q:'After a 50% loss, how much do you need to gain to break even?',o:['50%','75%','100%','200%'],a:2,e:'$100 → $50 needs +$50, which is +100% of $50.'},
+{q:'Which risk can diversification across many stocks reduce?',o:['Market-wide crash risk','Single-company risk','Inflation','Interest rates'],a:1,e:'Diversification reduces company-specific (unsystematic) risk.'},
+{q:'Owning five large tech companies is…',o:['Fully diversified','Concentrated in one sector, so still correlated','Risk-free','The same as owning an index'],a:1,e:'Stocks in the same sector tend to move together.'}
+]}
+]},
+{ id:'L2', name:'Intermediate', tag:'Chart & company analysis', color:'var(--l2)', lessons:[
+{ id:'i1', title:'Candlestick charts', mins:8, body:`
+<p>Each <b>candle</b> shows four prices for a period (1 minute, 1 day, 1 week…): open, high, low, close.</p>
+<svg class="diagram" viewBox="0 0 420 220" width="420" aria-label="Candlestick anatomy">
+ <line x1="110" y1="20" x2="110" y2="200" stroke="var(--up)" stroke-width="2"/>
+ <rect x="85" y="55" width="50" height="100" fill="var(--up)" rx="2"/>
+ <line x1="300" y1="20" x2="300" y2="200" stroke="var(--down)" stroke-width="2"/>
+ <rect x="275" y="55" width="50" height="100" fill="var(--down)" rx="2"/>
+ <text x="145" y="24">High</text><text x="145" y="60">Close</text><text x="145" y="155">Open</text><text x="145" y="203">Low</text>
+ <text x="335" y="24">High</text><text x="335" y="60">Open</text><text x="335" y="155">Close</text><text x="335" y="203">Low</text>
+ <text x="78" y="216" font-weight="700">Bullish</text><text x="272" y="216" font-weight="700">Bearish</text>
+ <text x="20" y="40">Wick</text><text x="20" y="110">Body</text>
+</svg>
+<ul>
+<li><b>Body</b> &mdash; between open and close. Green/hollow = closed higher than it opened. Red/filled = closed lower.</li>
+<li><b>Wicks (shadows)</b> &mdash; the extremes reached. A long upper wick means buyers pushed up but sellers drove it back down.</li>
+</ul>
+<h3>Key single-candle signals</h3>
+<table>
+<tr><th>Candle</th><th>Looks like</th><th>Suggests</th></tr>
+<tr><td>Doji</td><td>Open ≈ close, tiny body</td><td>Indecision</td></tr>
+<tr><td>Hammer</td><td>Small body at top, long lower wick, after a fall</td><td>Possible bullish reversal</td></tr>
+<tr><td>Shooting star</td><td>Small body at bottom, long upper wick, after a rise</td><td>Possible bearish reversal</td></tr>
+<tr><td>Marubozu</td><td>Big body, almost no wicks</td><td>Strong conviction</td></tr>
+</table>
+<h3>Two-candle patterns</h3>
+<p><b>Bullish engulfing:</b> a green body fully covers the previous red body &mdash; buyers took over. <b>Bearish engulfing</b> is the opposite.</p>
+<div class="callout warn">Candle patterns are <b>context</b>, not signals by themselves. A hammer in the middle of nowhere means little; a hammer at strong support with high volume means much more.</div>`,
+keys:['Body = open↔close; wicks = extremes','Long wicks show rejection of a price level','Patterns matter most at key levels'],
+quiz:[
+{q:'A candle has a tiny body with open almost equal to close. It is called a…',o:['Hammer','Doji','Marubozu','Engulfing'],a:1,e:'A doji shows indecision between buyers and sellers.'},
+{q:'A long upper wick generally indicates…',o:['Buyers were in full control at the close','Price was pushed up but rejected by sellers','No trading happened','The stock paid a dividend'],a:1,e:'Price reached higher but couldn\'t stay there.'},
+{q:'In a bullish (green) candle, the top of the body is the…',o:['Open','Close','High','Low'],a:1,e:'Green candles close higher than they open, so the top of the body is the close.'}
+]},
+{ id:'i2', title:'Trends, support & resistance', mins:8, body:`
+<h3>Trends</h3>
+<ul>
+<li><b>Uptrend</b>: higher highs and higher lows.</li>
+<li><b>Downtrend</b>: lower highs and lower lows.</li>
+<li><b>Sideways / range</b>: price bounces between two levels.</li>
+</ul>
+<p>"The trend is your friend" &mdash; trading in the direction of the main trend gives you the wind at your back.</p>
+<h3>Support &amp; resistance</h3>
+<p><b>Support</b> is a price zone where buying has stopped declines before. <b>Resistance</b> is a zone where selling has stopped rallies. They are zones, not exact lines.</p>
+<svg class="diagram" viewBox="0 0 440 180" width="440" aria-label="Support and resistance">
+ <line x1="10" y1="40" x2="430" y2="40" stroke="var(--down)" stroke-dasharray="6 4"/>
+ <line x1="10" y1="140" x2="430" y2="140" stroke="var(--up)" stroke-dasharray="6 4"/>
+ <polyline points="10,120 60,42 110,138 160,44 210,136 260,42 310,90 340,30 380,12 430,6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+ <text x="14" y="32">Resistance</text><text x="14" y="160">Support</text><text x="330" y="60">Breakout</text>
+</svg>
+<h3>Role reversal</h3>
+<p>When resistance breaks, it often becomes new support (and broken support becomes resistance). Traders watch for a <b>retest</b> of the broken level.</p>
+<h3>What makes a level strong?</h3>
+<ul><li>Many touches</li><li>High volume at the level</li><li>Visible on higher time frames (weekly &gt; daily &gt; hourly)</li><li>Round numbers ($50, $100)</li></ul>
+<div class="callout"><b>False breakouts</b> are common: price pokes through a level, then snaps back. Waiting for a close beyond the level, or a retest, filters many of them.</div>`,
+keys:['Uptrend = higher highs + higher lows','Support/resistance are zones','Broken resistance often becomes support'],
+quiz:[
+{q:'An uptrend is defined by…',o:['Lower highs and lower lows','Higher highs and higher lows','Equal highs and lows','Rising volume only'],a:1,e:'Each peak and each dip is higher than the last.'},
+{q:'After price breaks above resistance, that level often…',o:['Disappears','Acts as new support','Becomes stronger resistance','Has no meaning'],a:1,e:'This is called role reversal.'},
+{q:'Which makes a support level more significant?',o:['It was touched once','Many touches and high volume','It is on a 1-minute chart only','It is an odd number'],a:1,e:'More tests and more volume = more traders care about it.'}
+]},
+{ id:'i3', title:'Moving averages', mins:7, body:`
+<p>A <b>moving average (MA)</b> smooths price to show the trend.</p>
+<ul>
+<li><b>SMA</b> (simple): average of the last N closes.</li>
+<li><b>EMA</b> (exponential): gives more weight to recent prices, so it reacts faster.</li>
+</ul>
+<div class="formula">SMA(5) = (C1 + C2 + C3 + C4 + C5) ÷ 5</div>
+<h3>Popular settings</h3>
+<p>9/20 EMA for short-term traders; 50 SMA for the medium-term trend; 200 SMA for the long-term trend (many institutions watch it).</p>
+<h3>How traders use MAs</h3>
+<ul>
+<li><b>Trend filter</b>: price above a rising 200 SMA → favour longs.</li>
+<li><b>Dynamic support/resistance</b>: in strong trends, price often pulls back to the 20 or 50 MA.</li>
+<li><b>Crossovers</b>: 50 crossing above 200 = "golden cross"; below = "death cross".</li>
+</ul>
+<div class="callout warn">MAs are <b>lagging</b> indicators &mdash; they confirm what already happened. In sideways markets crossovers whipsaw you with many false signals.</div>
+<p>Try toggling SMA 20 and SMA 50 in the <b>Simulator</b> to see this in action.</p>`,
+keys:['MAs smooth price and show trend','EMA reacts faster than SMA','MAs lag and whipsaw in ranges'],
+quiz:[
+{q:'Which moving average reacts faster to recent price changes?',o:['SMA','EMA','Both equally','Neither'],a:1,e:'EMA weights recent data more heavily.'},
+{q:'A "golden cross" is when…',o:['Price touches the 200 MA','The 50 MA crosses above the 200 MA','RSI crosses 50','Volume doubles'],a:1,e:'50 above 200 = golden cross, a long-term bullish sign.'},
+{q:'In which market do MA crossovers perform worst?',o:['Strong uptrend','Strong downtrend','Choppy sideways range','All the same'],a:2,e:'Ranges produce repeated false crossovers (whipsaws).'}
+]},
+{ id:'i4', title:'Momentum: RSI & MACD', mins:8, body:`
+<h3>RSI (Relative Strength Index)</h3>
+<p>RSI measures the speed of recent gains versus losses on a 0&ndash;100 scale, usually over 14 periods.</p>
+<ul>
+<li>Above <b>70</b> = "overbought" (strong recent gains). Below <b>30</b> = "oversold".</li>
+<li>In strong uptrends RSI can stay above 70 for a long time &mdash; overbought is <i>not</i> automatically a sell signal.</li>
+<li><b>Divergence</b>: price makes a higher high but RSI makes a lower high → momentum is fading.</li>
+</ul>
+<h3>MACD</h3>
+<div class="formula">MACD line = EMA(12) − EMA(26)<br>Signal line = EMA(9) of MACD line<br>Histogram = MACD − Signal</div>
+<ul>
+<li>MACD crossing above the signal line → bullish momentum shift.</li>
+<li>MACD above zero → short-term average above long-term average (uptrend bias).</li>
+<li>Shrinking histogram → momentum slowing.</li>
+</ul>
+<div class="callout"><b>Use indicators to confirm, not to decide.</b> Price and structure (trend, levels) come first; momentum indicators add evidence. Stacking 6 indicators that measure the same thing doesn't add information.</div>`,
+keys:['RSI >70 overbought, <30 oversold (not automatic signals)','MACD = EMA12 − EMA26 with a 9 signal line','Divergence warns that momentum is fading'],
+quiz:[
+{q:'RSI reads 78 during a strong uptrend. The best interpretation is…',o:['Sell immediately','Momentum is strong; overbought alone is not a sell signal','The stock is broken','Volume is low'],a:1,e:'RSI can stay overbought in strong trends.'},
+{q:'The MACD line is calculated as…',o:['SMA50 − SMA200','EMA12 − EMA26','RSI − 50','High − Low'],a:1,e:'The standard MACD uses the 12 and 26 period EMAs.'},
+{q:'Price makes a new high but RSI makes a lower high. This is…',o:['Bearish divergence','Bullish divergence','A golden cross','Confirmation'],a:0,e:'Momentum not confirming the new high = bearish divergence.'}
+]},
+{ id:'i5', title:'Volume analysis', mins:6, body:`
+<p>Volume shows <b>how much conviction</b> is behind a price move.</p>
+<table>
+<tr><th>Price</th><th>Volume</th><th>Interpretation</th></tr>
+<tr><td>Up</td><td>High</td><td>Strong buying, healthy move</td></tr>
+<tr><td>Up</td><td>Low</td><td>Weak rally, may fade</td></tr>
+<tr><td>Down</td><td>High</td><td>Strong selling / distribution</td></tr>
+<tr><td>Down</td><td>Low</td><td>Light pullback, sellers not aggressive</td></tr>
+</table>
+<h3>Breakouts need volume</h3>
+<p>A breakout above resistance on 2&times; average volume is far more trustworthy than one on below-average volume.</p>
+<h3>Climax volume</h3>
+<p>A huge spike in volume after a long move can mark exhaustion &mdash; everyone who wanted to buy (or panic-sell) has done so.</p>
+<h3>VWAP</h3>
+<p><b>Volume-Weighted Average Price</b> is the average price paid today weighted by volume. Intraday traders and institutions use it as a benchmark: price above VWAP = buyers in control for the day.</p>`,
+keys:['Volume confirms or questions a move','Breakouts on high volume are more reliable','Volume spikes after long moves can mean exhaustion'],
+quiz:[
+{q:'A stock breaks out above resistance on very low volume. This breakout is…',o:['Very reliable','Less trustworthy','Guaranteed to fail','Irrelevant'],a:1,e:'Lack of volume = lack of conviction.'},
+{q:'Price falling on light volume most often suggests…',o:['Panic selling','A mild pullback without aggressive sellers','A crash','A stock split'],a:1,e:'Low-volume pullbacks are often healthy within uptrends.'},
+{q:'VWAP stands for…',o:['Very Wide Average Price','Volume-Weighted Average Price','Value With Added Profit','Variable Weekly Average Price'],a:1,e:'It\'s the volume-weighted average price for the session.'}
+]},
+{ id:'i6', title:'Fundamental analysis', mins:9, body:`
+<p>Fundamental analysis asks: <b>what is this business worth?</b></p>
+<h3>The three financial statements</h3>
+<ul>
+<li><b>Income statement</b>: revenue → expenses → net income (profit).</li>
+<li><b>Balance sheet</b>: assets = liabilities + shareholders' equity.</li>
+<li><b>Cash flow statement</b>: actual cash in and out. Profits can be "paper"; cash is harder to fake.</li>
+</ul>
+<h3>Key ratios</h3>
+<table>
+<tr><th>Ratio</th><th>Formula</th><th>Tells you</th></tr>
+<tr><td>EPS</td><td>Net income ÷ shares</td><td>Profit per share</td></tr>
+<tr><td>P/E</td><td>Price ÷ EPS</td><td>How much you pay for $1 of earnings</td></tr>
+<tr><td>PEG</td><td>P/E ÷ growth rate (%)</td><td>P/E adjusted for growth</td></tr>
+<tr><td>P/B</td><td>Price ÷ book value per share</td><td>Price vs net assets</td></tr>
+<tr><td>Debt/Equity</td><td>Total debt ÷ equity</td><td>Financial leverage</td></tr>
+<tr><td>ROE</td><td>Net income ÷ equity</td><td>How efficiently equity is used</td></tr>
+<tr><td>Profit margin</td><td>Net income ÷ revenue</td><td>How much of each sale is profit</td></tr>
+<tr><td>Free cash flow</td><td>Operating cash − capex</td><td>Cash left for dividends, buybacks, growth</td></tr>
+</table>
+<div class="formula">Price $60, EPS $3 → P/E = 20 (you pay $20 for each $1 of annual profit)</div>
+<p>Compare ratios to the company's <b>own history</b> and to <b>similar companies</b>; a "good" P/E for a software firm differs from a bank.</p>
+<h3>Earnings season</h3>
+<p>Companies report quarterly. The stock reacts to results <i>versus expectations</i> and to <b>guidance</b> (management's forecast). Beating estimates can still cause a drop if guidance disappoints.</p>`,
+keys:['P/E = price ÷ EPS','Compare ratios within an industry','Markets react to results vs expectations'],
+quiz:[
+{q:'A stock trades at $50 with EPS of $2.50. Its P/E is…',o:['12.5','20','25','125'],a:1,e:'50 ÷ 2.5 = 20.'},
+{q:'Which statement shows assets, liabilities and equity?',o:['Income statement','Balance sheet','Cash flow statement','Annual report cover'],a:1,e:'Assets = liabilities + equity on the balance sheet.'},
+{q:'A company beats earnings estimates but cuts future guidance. The stock…',o:['Must rise','Can still fall','Is delisted','Cannot move'],a:1,e:'Price reflects future expectations, so weak guidance can outweigh a beat.'}
+]},
+{ id:'i7', title:'Chart patterns', mins:9, body:`
+<p>Patterns are recurring shapes that reflect crowd behaviour.</p>
+<h3>Reversal patterns</h3>
+<ul>
+<li><b>Head &amp; shoulders</b>: three peaks, middle highest. Break of the "neckline" signals a possible top. Inverse version = possible bottom.</li>
+<li><b>Double top / double bottom</b>: two failed attempts at the same level ("M" or "W" shape).</li>
+</ul>
+<h3>Continuation patterns</h3>
+<ul>
+<li><b>Bull flag</b>: sharp rise (pole), then a small downward-sloping consolidation, then continuation up.</li>
+<li><b>Triangles</b>: ascending (flat top, rising lows, usually bullish), descending (flat bottom, falling highs, usually bearish), symmetrical (either way).</li>
+<li><b>Cup &amp; handle</b>: rounded base then small pullback before breakout.</li>
+</ul>
+<svg class="diagram" viewBox="0 0 460 150" width="460" aria-label="Pattern shapes">
+ <polyline points="10,120 40,70 60,95 90,30 120,95 140,70 170,125" fill="none" stroke="var(--down)" stroke-width="2.5"/>
+ <line x1="40" y1="96" x2="160" y2="96" stroke="var(--muted)" stroke-dasharray="4 3"/>
+ <text x="40" y="145">Head &amp; shoulders</text>
+ <polyline points="200,130 230,40 245,60 260,50 275,66 290,56 305,70 330,10" fill="none" stroke="var(--up)" stroke-width="2.5"/>
+ <text x="235" y="145">Bull flag</text>
+ <polyline points="350,120 370,40 385,100 400,40 415,85 430,40 440,70 455,15" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+ <line x1="360" y1="40" x2="450" y2="40" stroke="var(--muted)" stroke-dasharray="4 3"/>
+ <text x="345" y="145">Ascending triangle</text>
+</svg>
+<h3>Measured move</h3>
+<p>A common target estimate: take the height of the pattern and project it from the breakout point. For a flag, project the pole length.</p>
+<div class="callout warn">Patterns fail often. Always trade them with a stop (e.g. just inside the pattern) and confirm with volume on the breakout.</div>`,
+keys:['Reversal: head & shoulders, double top/bottom','Continuation: flags, triangles, cup & handle','Confirm breakouts with volume; patterns can fail'],
+quiz:[
+{q:'Which pattern is usually a continuation pattern?',o:['Head and shoulders','Double top','Bull flag','Inverse head and shoulders'],a:2,e:'Flags are pauses within a trend.'},
+{q:'An ascending triangle has…',o:['Flat top and rising lows','Falling highs and flat bottom','Both lines falling','No trendlines'],a:0,e:'Buyers keep stepping in higher while sellers hold a flat ceiling.'},
+{q:'A head & shoulders is confirmed when price…',o:['Makes the head','Breaks below the neckline','Touches the left shoulder','Has a doji'],a:1,e:'The neckline break is the trigger.'}
+]}
+]},
+{ id:'L3', name:'Advanced', tag:'Risk, strategy & psychology', color:'var(--l3)', lessons:[
+{ id:'a1', title:'Position sizing & the 1% rule', mins:8, body:`
+<p>Position sizing is the most important skill most beginners skip. It decides <b>how many shares</b> to buy so that a losing trade only costs a small, planned amount.</p>
+<h3>The 1% (or 2%) rule</h3>
+<p>Risk no more than 1&ndash;2% of your account on any single trade. "Risk" means the money lost if your stop-loss is hit &mdash; not the size of the position.</p>
+<div class="formula">Shares = (Account × Risk%) ÷ (Entry − Stop)<br><br>
+$10,000 × 1% = $100 risk<br>Entry $50, stop $48 → risk per share $2<br>Shares = 100 ÷ 2 = <b>50 shares</b> ($2,500 position)</div>
+<p>Notice the position is $2,500, but the <i>risk</i> is only $100. A wider stop means fewer shares; a tighter stop means more shares.</p>
+<h3>Why it matters</h3>
+<p>With 1% risk per trade, even 10 losses in a row only costs ~10% of your account. With 10% risk per trade, the same streak can cost about 65%.</p>
+<div class="callout good">Use the <b>Position Size calculator</b> in Tools for every trade until it becomes automatic.</div>`,
+keys:['Risk = distance to stop × shares','Risk 1–2% of the account per trade','Stop distance decides share count, not the other way round'],
+quiz:[
+{q:'Account $20,000, risk 1%, entry $40, stop $38. How many shares?',o:['50','100','200','500'],a:1,e:'$200 risk ÷ $2 per share = 100 shares.'},
+{q:'Under the 1% rule, "risk" refers to…',o:['Total position value','Money lost if the stop is hit','Broker fees','Daily price range'],a:1,e:'It\'s the planned loss, not the position size.'},
+{q:'If you widen your stop and keep the same % risk, your share count should…',o:['Increase','Decrease','Stay the same','Double'],a:1,e:'Bigger risk per share → fewer shares.'}
+]},
+{ id:'a2', title:'Risk/reward & expectancy', mins:8, body:`
+<h3>Risk/reward ratio (R:R)</h3>
+<div class="formula">R:R = (Target − Entry) ÷ (Entry − Stop)<br>Entry 50, stop 48, target 56 → reward 6 / risk 2 = <b>3:1</b></div>
+<p>Pros measure results in <b>R</b> (multiples of the initial risk). A +3R trade made three times what was risked.</p>
+<h3>Break-even win rate</h3>
+<div class="formula">Break-even win rate = 1 ÷ (1 + R:R)</div>
+<table><tr><th>R:R</th><th>Win rate needed to break even</th></tr>
+<tr><td>1:1</td><td>50%</td></tr><tr><td>2:1</td><td>33%</td></tr><tr><td>3:1</td><td>25%</td></tr></table>
+<h3>Expectancy</h3>
+<p>Expectancy is how much you expect to make <b>per trade on average</b>.</p>
+<div class="formula">Expectancy = (Win% × Avg win) − (Loss% × Avg loss)<br>
+40% × $300 − 60% × $100 = 120 − 60 = <b>+$60 per trade</b></div>
+<p>You can be right less than half the time and still be very profitable &mdash; if your winners are bigger than your losers.</p>
+<div class="callout warn">A great R:R on paper means nothing if the target is unrealistic. The target must be based on structure (next resistance, measured move), not wishes.</div>`,
+keys:['Think in R (multiples of risk)','Higher R:R lowers the win rate you need','Positive expectancy is the goal, not a high win rate'],
+quiz:[
+{q:'Entry $100, stop $95, target $115. The R:R is…',o:['1:1','2:1','3:1','5:1'],a:2,e:'Reward 15 ÷ risk 5 = 3.'},
+{q:'With a 2:1 R:R, what win rate do you need to break even (ignoring costs)?',o:['25%','33%','50%','66%'],a:1,e:'1 ÷ (1+2) ≈ 33%.'},
+{q:'Win rate 50%, average win $200, average loss $100. Expectancy per trade is…',o:['$0','$50','$100','$150'],a:1,e:'0.5×200 − 0.5×100 = 50.'}
+]},
+{ id:'a3', title:'Stop-losses & exits', mins:7, body:`
+<p>Every trade needs an exit plan for both outcomes: being <b>wrong</b> and being <b>right</b>.</p>
+<h3>Where to put the stop</h3>
+<ul>
+<li><b>Structure stop</b> (best): just beyond the level that proves your idea wrong &mdash; below support for a long, above resistance for a short.</li>
+<li><b>Volatility stop</b>: a multiple of ATR (Average True Range), e.g. 1.5–2× ATR from entry, so normal noise doesn't stop you out.</li>
+<li><b>Percentage stop</b>: simple but ignores the chart; least preferred.</li>
+</ul>
+<div class="callout warn">Never move a stop further away to "give it room" once in the trade. That's how small losses become account-killers.</div>
+<h3>Taking profits</h3>
+<ul>
+<li><b>Fixed target</b> at the next resistance or measured move.</li>
+<li><b>Scaling out</b>: sell part at 1R or 2R, let the rest run.</li>
+<li><b>Trailing stop</b>: move the stop up under each new higher low, or follow a moving average.</li>
+<li><b>Break-even stop</b>: after price moves 1R in your favour, move the stop to entry.</li>
+</ul>
+<p>The <b>Simulator</b> lets you set stop-loss and take-profit levels &mdash; practise using them on every trade.</p>`,
+keys:['Stops go where your idea is proven wrong','ATR-based stops respect volatility','Never widen a stop after entry'],
+quiz:[
+{q:'For a long trade at support, the most logical stop is…',o:['A random 5% below entry','Just below the support level','Above the entry','No stop'],a:1,e:'If support breaks, the reason for the trade is gone.'},
+{q:'ATR measures…',o:['Trend direction','Average price range / volatility','Volume','Earnings growth'],a:1,e:'Average True Range measures typical movement per period.'},
+{q:'A trade goes against you and nears your stop. A disciplined trader…',o:['Moves the stop lower','Lets the stop work as planned','Adds more shares to average down','Turns off the computer'],a:1,e:'Stick to the plan; widening stops destroys risk control.'}
+]},
+{ id:'a4', title:'Your trading plan & journal', mins:7, body:`
+<p>A <b>trading plan</b> turns trading from gambling into a repeatable process. Write it down.</p>
+<h3>A plan answers</h3>
+<ol>
+<li>What markets and time frame do I trade?</li>
+<li>What exact setup do I look for? (e.g. "pullback to rising 20 EMA in an uptrend above the 200 SMA")</li>
+<li>What is my entry trigger?</li>
+<li>Where is my stop? How do I size the position?</li>
+<li>How do I take profits?</li>
+<li>Max risk per trade, per day, per week (e.g. stop trading after −3R in a day).</li>
+<li>When do I <i>not</i> trade? (news, earnings, tired, emotional)</li>
+</ol>
+<h3>The journal</h3>
+<p>Record every trade: date, ticker, setup, entry, stop, target, size, exit, result in R, a screenshot, and how you felt. Review weekly.</p>
+<table><tr><th>Date</th><th>Ticker</th><th>Setup</th><th>Entry</th><th>Stop</th><th>Exit</th><th>R</th><th>Notes</th></tr>
+<tr><td>03-12</td><td>XYZ</td><td>Bull flag</td><td>52.00</td><td>50.50</td><td>55.00</td><td>+2.0</td><td>Followed plan</td></tr></table>
+<div class="callout good">Your journal becomes your personal dataset. After 50–100 trades you'll know which setups actually work <i>for you</i> and which mistakes cost the most.</div>`,
+keys:['Write your rules before you trade','Journal every trade, including emotions','Review data to improve, not memories'],
+quiz:[
+{q:'Which belongs in a trading plan?',o:['Hot tips from social media','Specific entry, stop and sizing rules','Hoping for the best','Only the stocks you like'],a:1,e:'A plan defines objective, repeatable rules.'},
+{q:'Why record emotions in a journal?',o:['It\'s required by law','Emotions often explain rule-breaking and losses','To share on social media','It isn\'t useful'],a:1,e:'Patterns like revenge trading become visible.'},
+{q:'A daily loss limit (e.g. −3R) helps by…',o:['Guaranteeing profits','Stopping a bad day from turning into a disaster','Increasing trade size','Avoiding taxes'],a:1,e:'It caps damage when you are off your game.'}
+]},
+{ id:'a5', title:'Trading psychology', mins:8, body:`
+<p>Most traders know <i>what</i> to do. The hard part is doing it under pressure.</p>
+<h3>Common traps</h3>
+<table>
+<tr><th>Trap</th><th>What it looks like</th><th>Fix</th></tr>
+<tr><td>FOMO</td><td>Chasing a stock that already ran</td><td>Only take planned setups; there's always another trade</td></tr>
+<tr><td>Revenge trading</td><td>Trading bigger to win back a loss</td><td>Daily loss limit; walk away</td></tr>
+<tr><td>Loss aversion</td><td>Holding losers, cutting winners early</td><td>Pre-set stops and targets</td></tr>
+<tr><td>Overconfidence</td><td>Raising size after a hot streak</td><td>Keep size fixed by rules</td></tr>
+<tr><td>Confirmation bias</td><td>Only reading news that agrees with you</td><td>Write the bear case before buying</td></tr>
+<tr><td>Overtrading</td><td>Trading from boredom</td><td>Max trades per day</td></tr>
+</table>
+<h3>Think in probabilities</h3>
+<p>Any single trade is random; an edge only shows up over many trades. A loss on a well-executed trade is a <b>good trade</b>. A win from breaking your rules is a <b>bad trade</b> that teaches the wrong lesson.</p>
+<div class="callout">Grade yourself on <b>process</b> (did I follow my plan?), not on each trade's outcome.</div>`,
+keys:['Process over outcome','Fixed rules protect you from emotions','A loss can be a good trade'],
+quiz:[
+{q:'After three losses you double your size to "win it back". This is…',o:['Position sizing','Revenge trading','Scaling in','Hedging'],a:1,e:'Classic revenge trading; it often leads to bigger losses.'},
+{q:'You followed your plan perfectly and the trade hit its stop. This was…',o:['A bad trade','A good trade with a losing outcome','A reason to quit','A reason to widen stops'],a:1,e:'Good process, normal variance.'},
+{q:'Loss aversion typically causes traders to…',o:['Cut losers fast and let winners run','Hold losers too long and sell winners too early','Never trade','Use stops perfectly'],a:1,e:'People hate realising losses, so they hold them, and rush to lock in gains.'}
+]},
+{ id:'a6', title:'Backtesting & finding an edge', mins:8, body:`
+<p>An <b>edge</b> is a repeatable situation where the odds or payoff are in your favour. <b>Backtesting</b> tests a strategy on past data before risking money.</p>
+<h3>How to backtest manually</h3>
+<ol>
+<li>Write precise rules (entry, stop, target, filters).</li>
+<li>Scroll back on charts and step forward candle by candle, without peeking.</li>
+<li>Log every signal that matches the rules &mdash; including the ugly ones.</li>
+<li>After 50–100+ trades, calculate win rate, average R, expectancy and max drawdown.</li>
+</ol>
+<h3>Pitfalls</h3>
+<ul>
+<li><b>Overfitting</b>: tuning rules until they fit the past perfectly; they then fail live.</li>
+<li><b>Look-ahead bias</b>: using information that wasn't available at the time.</li>
+<li><b>Survivorship bias</b>: testing only on stocks that still exist (failures were removed).</li>
+<li><b>Ignoring costs</b>: commissions, spreads and slippage can erase small edges.</li>
+</ul>
+<h3>Then forward test</h3>
+<p>Trade the strategy on paper or with very small size for weeks. Only scale up when live results resemble the backtest.</p>
+<div class="callout good">The <b>Simulator</b> is a candle-by-candle practice tool &mdash; perfect for testing your rules without peeking ahead.</div>`,
+keys:['Edge = repeatable positive expectancy','Beware overfitting, look-ahead and survivorship bias','Backtest → paper trade → small size → scale'],
+quiz:[
+{q:'Adjusting a strategy until it fits historical data perfectly is called…',o:['Optimization success','Overfitting','Forward testing','Hedging'],a:1,e:'Overfit strategies usually break in live markets.'},
+{q:'Testing only on companies that exist today introduces…',o:['Survivorship bias','Recency bias','Liquidity','Leverage'],a:0,e:'Companies that went bankrupt were excluded, flattering results.'},
+{q:'After a good backtest, the sensible next step is…',o:['Trade maximum size immediately','Forward test on paper or with small size','Quit your job','Ignore costs'],a:1,e:'Forward testing checks whether the edge holds in real time.'}
+]}
+]},
+{ id:'L4', name:'Pro', tag:'Advanced instruments & mastery', color:'var(--l4)', lessons:[
+{ id:'p1', title:'Short selling & margin', mins:8, body:`
+<h3>Margin</h3>
+<p>A <b>margin account</b> lets you borrow from your broker using your holdings as collateral. Leverage magnifies both gains <i>and</i> losses, and you pay interest on the loan.</p>
+<div class="formula">$10,000 own cash + $10,000 borrowed = $20,000 position<br>Stock falls 25% → position $15,000 → your equity $5,000 (−50%)</div>
+<p>If your equity falls below the <b>maintenance margin</b>, you get a <b>margin call</b>: deposit more money or the broker sells your positions, often at the worst time.</p>
+<h3>Short selling</h3>
+<p>To profit from a falling price you <b>borrow shares, sell them now, and buy them back later</b> (cover) hopefully cheaper.</p>
+<div class="formula">Short 100 at $50 → cover at $40 = +$1,000<br>Short 100 at $50 → cover at $80 = −$3,000</div>
+<div class="callout warn"><b>Unlimited risk:</b> a stock can only fall to $0 (max gain 100%) but can rise without limit. A <b>short squeeze</b> happens when shorts rush to cover at once, rocketing the price. Shorts may also pay borrow fees and any dividends.</div>`,
+keys:['Margin = leverage: magnifies losses too','Margin calls force selling at bad prices','Shorting has theoretically unlimited loss'],
+quiz:[
+{q:'You short a stock at $30 and cover at $24. Your profit per share is…',o:['−$6','$6','$24','$54'],a:1,e:'Sold at 30, bought back at 24 = +6.'},
+{q:'Why is short selling considered to have unlimited risk?',o:['Stocks can rise without limit','Brokers charge unlimited fees','Shorts never expire','Dividends are unlimited'],a:0,e:'There is no ceiling on how high a price can go.'},
+{q:'A margin call occurs when…',o:['Your trade is profitable','Your equity drops below the maintenance requirement','You buy with cash','The market closes'],a:1,e:'The broker demands more collateral or liquidates positions.'}
+]},
+{ id:'p2', title:'Options basics', mins:10, body:`
+<p>An <b>option</b> is a contract giving the right (not obligation) to buy or sell a stock at a set price (<b>strike</b>) until a set date (<b>expiration</b>). On US exchanges one contract usually covers 100 shares.</p>
+<table>
+<tr><th></th><th>Call</th><th>Put</th></tr>
+<tr><td>Right to…</td><td>Buy at the strike</td><td>Sell at the strike</td></tr>
+<tr><td>Buyer profits if…</td><td>Price rises well above strike</td><td>Price falls well below strike</td></tr>
+<tr><td>Max loss for buyer</td><td>Premium paid</td><td>Premium paid</td></tr>
+</table>
+<div class="formula">Buy 1 call, strike $100, premium $3 ($300 total)<br>At expiry stock = $110 → value $10 × 100 = $1,000 → profit $700<br>At expiry stock = $98 → worthless → loss $300<br>Break-even at expiry = strike + premium = $103</div>
+<h3>Moneyness</h3>
+<p><b>In the money (ITM)</b>: has intrinsic value (call strike below price). <b>At the money (ATM)</b>: strike ≈ price. <b>Out of the money (OTM)</b>: no intrinsic value, only time value.</p>
+<h3>The Greeks (simplified)</h3>
+<ul>
+<li><b>Delta</b>: how much the option moves per $1 move in the stock.</li>
+<li><b>Theta</b>: daily time decay &mdash; options lose value as expiry approaches.</li>
+<li><b>Vega</b>: sensitivity to implied volatility. IV often drops sharply after earnings ("IV crush").</li>
+<li><b>Gamma</b>: how fast delta changes.</li>
+</ul>
+<div class="callout warn">Most short-dated OTM options expire worthless. <b>Selling</b> options (writing) collects premium but can carry very large or unlimited risk (e.g. naked calls). Learn thoroughly and paper trade first.</div>`,
+keys:['Call = right to buy; put = right to sell','Option buyers risk only the premium; time decay works against them','Greeks: delta, theta, vega, gamma'],
+quiz:[
+{q:'A put option gives the buyer the right to…',o:['Buy shares at the strike','Sell shares at the strike','Receive dividends','Borrow shares'],a:1,e:'Puts = right to sell.'},
+{q:'You buy a $50 call for $2. Break-even at expiration is…',o:['$48','$50','$52','$100'],a:2,e:'Strike + premium = 52.'},
+{q:'Which Greek measures time decay?',o:['Delta','Gamma','Theta','Vega'],a:2,e:'Theta erodes option value as time passes.'}
+]},
+{ id:'p3', title:'Market structure, gaps & news', mins:8, body:`
+<h3>Liquidity</h3>
+<p>Liquidity is how easily you can trade without moving the price. High volume and tight spreads = liquid. Large orders in illiquid stocks cause <b>slippage</b>.</p>
+<h3>Level 2 / order book</h3>
+<p>Shows waiting bids and asks at each price. Useful for very short-term trading, but large orders can be hidden or pulled, so treat it as a clue, not truth.</p>
+<h3>Gaps</h3>
+<p>A <b>gap</b> occurs when price opens well above or below the previous close (often after news or earnings).</p>
+<ul>
+<li><b>Breakaway gap</b>: starts a new trend, often on huge volume.</li>
+<li><b>Exhaustion gap</b>: late in a move, often reverses.</li>
+<li><b>Common gap</b>: small, often "filled" quickly.</li>
+</ul>
+<h3>Catalysts</h3>
+<p>Earnings, guidance, central-bank interest-rate decisions, inflation (CPI) reports, jobs data, mergers, analyst upgrades/downgrades, and sector news. Know the economic calendar &mdash; volatility spikes around these events.</p>
+<h3>Sector rotation &amp; relative strength</h3>
+<p>Money flows between sectors. Pros prefer stocks that are <b>stronger than the market</b> (falling less on red days, rising more on green days) and in leading sectors.</p>`,
+keys:['Liquidity reduces slippage','Gaps often follow news; volume tells which kind','Trade relative strength in leading sectors'],
+quiz:[
+{q:'A stock gaps up 15% on earnings with 5× normal volume, starting a new uptrend. This is likely a…',o:['Common gap','Breakaway gap','Exhaustion gap','Dividend gap'],a:1,e:'Big news + big volume + new trend = breakaway.'},
+{q:'Relative strength means a stock…',o:['Has high RSI only','Performs better than the market or its sector','Has low volume','Pays high dividends'],a:1,e:'It outperforms its benchmark.'},
+{q:'Slippage is most likely when…',o:['Trading a liquid large-cap with limit orders','Placing a large market order in a thinly traded stock','Not trading','Buying an index ETF at midday'],a:1,e:'Thin liquidity + market orders = poor fills.'}
+]},
+{ id:'p4', title:'Multi-timeframe analysis', mins:7, body:`
+<p>Pros look at the same stock on several time frames: one for <b>direction</b>, one for <b>setup</b>, one for <b>entry</b>.</p>
+<table>
+<tr><th>Trader type</th><th>Trend (higher)</th><th>Setup</th><th>Entry (lower)</th></tr>
+<tr><td>Position</td><td>Monthly</td><td>Weekly</td><td>Daily</td></tr>
+<tr><td>Swing</td><td>Weekly</td><td>Daily</td><td>Hourly</td></tr>
+<tr><td>Day</td><td>Daily</td><td>15-min</td><td>1–5 min</td></tr>
+</table>
+<h3>Rules of thumb</h3>
+<ul>
+<li>Trade <b>with</b> the higher time frame trend.</li>
+<li>Higher time-frame levels beat lower ones: weekly resistance &gt; 5-minute resistance.</li>
+<li>Use the lower frame to fine-tune entries and tighten stops, improving R:R.</li>
+</ul>
+<div class="callout">Example: weekly uptrend → daily pullback to the 50 SMA and prior support → hourly bullish engulfing with rising volume → enter with stop below the hourly low.</div>`,
+keys:['Higher frame = direction; lower = timing','Higher time-frame levels carry more weight','Aligned time frames = higher-quality trades'],
+quiz:[
+{q:'A swing trader typically uses which frame for the main trend?',o:['1-minute','Hourly','Weekly','Tick chart'],a:2,e:'Weekly for trend, daily for setup, hourly for entry.'},
+{q:'Which resistance level is usually most significant?',o:['5-minute','Hourly','Daily','Weekly'],a:3,e:'Higher time frames represent more traders and capital.'},
+{q:'The main benefit of using a lower time frame for entry is…',o:['More trades','A tighter stop and better R:R','No need for a plan','Lower taxes'],a:1,e:'Precise entries allow tighter, logical stops.'}
+]},
+{ id:'p5', title:'Portfolio risk & drawdowns', mins:8, body:`
+<h3>Drawdown</h3>
+<p>Drawdown is the drop from your account's peak to its lowest point before a new peak. <b>Max drawdown</b> is the worst one. Every strategy has losing streaks &mdash; plan for them.</p>
+<h3>Losing streaks are normal</h3>
+<p>With a 50% win rate, a streak of 6+ losses in a row is quite likely somewhere in a few hundred trades. That's why risk per trade must be small.</p>
+<h3>Portfolio heat</h3>
+<p>Total open risk across all positions. If you hold 5 trades risking 1% each, your heat is 5%. Correlated positions (all tech, all long) behave like one big position.</p>
+<h3>Kelly criterion (reference)</h3>
+<div class="formula">Kelly % = W − (1 − W) ÷ R<br>W = win rate, R = avg win ÷ avg loss<br>W 50%, R 2 → 0.5 − 0.5/2 = 25%</div>
+<p>Full Kelly is far too aggressive for real trading because your estimates are uncertain. Many professionals use a small fraction of it, or simply fixed 0.5–1% risk.</p>
+<h3>Scaling up</h3>
+<p>Increase size slowly and only after a consistent record. Reduce size during drawdowns; the fastest way back is protecting what's left.</p>`,
+keys:['Expect and survive losing streaks','Track total open risk ("heat")','Kelly is a ceiling, not a target'],
+quiz:[
+{q:'You hold 4 positions each risking 1.5%. Your portfolio heat is…',o:['1.5%','4%','6%','15%'],a:2,e:'4 × 1.5% = 6%.'},
+{q:'Win rate 60%, average win/loss ratio 1. Full Kelly suggests…',o:['10%','20%','40%','60%'],a:1,e:'0.6 − 0.4/1 = 0.2 = 20%.'},
+{q:'During a drawdown, a professional typically…',o:['Increases size to recover fast','Reduces size and reviews the journal','Stops using stops','Switches strategy daily'],a:1,e:'Protect capital first, then diagnose.'}
+]},
+{ id:'p6', title:'Costs, taxes & the pro routine', mins:7, body:`
+<h3>Costs eat edges</h3>
+<p>Commissions, spreads, slippage, margin interest, data fees and taxes all reduce returns. A strategy making 0.2% per trade can turn negative after costs if you trade often.</p>
+<h3>Taxes (general)</h3>
+<p>Many countries tax trading profits and dividends, sometimes differently depending on how long you held the asset. Rules vary greatly &mdash; keep clean records and check local regulations or a tax professional.</p>
+<h3>A professional daily routine</h3>
+<ol>
+<li><b>Pre-market</b>: check index futures, news, economic calendar, earnings; update watchlist with levels.</li>
+<li><b>Plan</b>: write the setups you'll take, entries, stops, sizes.</li>
+<li><b>Execute</b>: only planned trades. Respect daily loss limit.</li>
+<li><b>Post-market</b>: journal every trade with screenshots.</li>
+<li><b>Weekly review</b>: stats by setup, mistakes, what to improve.</li>
+</ol>
+<h3>The path from beginner to pro</h3>
+<p>Learn → paper trade → trade tiny size → build a journal of 100+ trades → refine one or two setups → scale slowly. Consistency comes from process, not from finding a "holy grail" indicator.</p>
+<div class="callout good">Congratulations on reaching the final lesson! Keep practising in the Simulator, use Quick Quiz for review, and revisit any lesson anytime.</div>`,
+keys:['Costs matter, especially for frequent traders','Records + local tax rules','Routine: prepare, execute, journal, review'],
+quiz:[
+{q:'Why can a small edge disappear for a very active trader?',o:['Brokers block profits','Costs and slippage add up per trade','Markets close','Taxes are zero'],a:1,e:'Every trade carries costs that subtract from expectancy.'},
+{q:'Which step comes after the trading day ends in a pro routine?',o:['Increase size','Journal and review trades','Delete records','Buy random stocks'],a:1,e:'Post-market review is where improvement happens.'},
+{q:'A sensible progression for a new trader is…',o:['Big size → learn later','Learn → paper → tiny size → scale slowly','Copy social media tips','Use maximum leverage'],a:1,e:'Earn the right to size up with evidence.'}
+]}
+]}
+];
+
+const GLOSSARY = [
+['Ask','The lowest price a seller is currently willing to accept.'],
+['ATR','Average True Range: the average size of price moves per period; measures volatility.'],
+['Bear market','A decline of 20% or more from a recent high.'],
+['Bid','The highest price a buyer is currently willing to pay.'],
+['Blue chip','A large, established, financially stable company.'],
+['Breakout','Price moving decisively beyond a support or resistance level.'],
+['Bull market','A sustained rise in prices.'],
+['Call option','Right to buy a stock at a set strike price before expiration.'],
+['Candlestick','Chart element showing open, high, low and close for a period.'],
+['Capital gain','Profit from selling an asset for more than its purchase price.'],
+['Correction','A drop of 10–20% from a recent high.'],
+['Cover','Buying back shares to close a short position.'],
+['Day trading','Opening and closing positions within the same trading day.'],
+['Delta','How much an option price changes per $1 move in the stock.'],
+['Divergence','When price and an indicator move in opposite directions.'],
+['Dividend','A share of company profits paid to shareholders.'],
+['Doji','Candle with nearly equal open and close; indecision.'],
+['Drawdown','Decline from an account peak to a subsequent low.'],
+['EMA','Exponential Moving Average; weights recent prices more.'],
+['EPS','Earnings Per Share: net income ÷ shares outstanding.'],
+['ETF','Exchange-Traded Fund: a fund that trades like a stock.'],
+['Expectancy','Average amount won or lost per trade.'],
+['Float','Shares available for public trading.'],
+['FOMO','Fear Of Missing Out; chasing trades emotionally.'],
+['Gap','Price opening significantly above or below the prior close.'],
+['Guidance','Management\'s forecast of future results.'],
+['Index','A basket of stocks tracking a market segment (e.g. S&P 500).'],
+['IPO','Initial Public Offering; a company\'s first sale of shares to the public.'],
+['Leverage','Using borrowed money to increase position size.'],
+['Limit order','Order to trade only at a specified price or better.'],
+['Liquidity','How easily an asset can be traded without moving its price.'],
+['Long','Owning a stock, profiting if it rises.'],
+['MACD','Momentum indicator: EMA12 − EMA26 with a 9-period signal line.'],
+['Margin call','Broker demand for more funds when equity falls too low.'],
+['Market cap','Share price × shares outstanding.'],
+['Market order','Order to trade immediately at the best available price.'],
+['Moving average','Average price over a set number of periods, plotted as a line.'],
+['OHLC','Open, High, Low, Close.'],
+['Overbought','Condition after strong gains; RSI above 70.'],
+['Oversold','Condition after strong declines; RSI below 30.'],
+['P/E ratio','Price ÷ earnings per share.'],
+['Paper trading','Simulated trading with fake money.'],
+['Position sizing','Deciding how many shares to trade based on risk.'],
+['Premium','Price paid for an options contract.'],
+['Pullback','A temporary move against the main trend.'],
+['Put option','Right to sell a stock at a set strike price before expiration.'],
+['R multiple','Trade result expressed as a multiple of initial risk.'],
+['Resistance','Price zone where selling has stopped rallies.'],
+['Risk/reward','Potential profit compared to potential loss on a trade.'],
+['RSI','Relative Strength Index: 0–100 momentum oscillator.'],
+['Scalping','Very short-term trading aiming for small, quick profits.'],
+['Short selling','Selling borrowed shares, hoping to buy them back cheaper.'],
+['Short squeeze','Rapid price rise forcing short sellers to cover.'],
+['Slippage','Difference between expected and actual fill price.'],
+['SMA','Simple Moving Average: plain average of last N closes.'],
+['Spread','Difference between the bid and the ask.'],
+['Stop-loss','Order to exit a position when price hits a set level.'],
+['Support','Price zone where buying has stopped declines.'],
+['Swing trading','Holding trades for days to weeks.'],
+['Theta','Daily time decay of an option\'s value.'],
+['Ticker','Short symbol identifying a listed security.'],
+['Trailing stop','Stop that moves with price in your favour.'],
+['Trend','General direction of price over time.'],
+['Volatility','How much and how quickly price moves.'],
+['Volume','Number of shares traded in a period.'],
+['VWAP','Volume-Weighted Average Price for the session.'],
+['Whipsaw','Price quickly reversing, triggering false signals.'],
+['Yield','Annual dividend ÷ current price.']
+];
+
+/* =========================================================
+   STATE (localStorage, wrapped)
+   ========================================================= */
+const KEY='tradepocket.v1';
+const defaultState={done:{},xp:0,streak:{last:null,count:0},sim:{best:null,runs:0},cards:{},quizBest:0,theme:null};
+let S=load();
+function load(){try{const r=JSON.parse(localStorage.getItem(KEY));return Object.assign(structuredClone(defaultState),r||{});}catch(e){return structuredClone(defaultState);}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function today(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function touchStreak(){
+  const t=today(); if(S.streak.last===t) return;
+  const y=new Date(Date.now()-864e5); const ys=y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();
+  S.streak.count = S.streak.last===ys ? S.streak.count+1 : 1; S.streak.last=t; save();
+}
+function addXP(n){S.xp+=n;touchStreak();save();}
+const ALL = LEVELS.flatMap(l=>l.lessons.map(x=>({...x,level:l})));
+function levelProgress(l){const d=l.lessons.filter(x=>S.done[x.id]).length;return {d,t:l.lessons.length};}
+function rank(){const n=Object.keys(S.done).length;const tot=ALL.length;
+  if(n>=tot) return 'Pro Trader'; if(n>=18) return 'Advanced'; if(n>=12) return 'Intermediate'; if(n>=6) return 'Apprentice'; return 'Beginner';}
+
+/* =========================================================
+   THEME
+   ========================================================= */
+function applyTheme(){ if(S.theme) document.documentElement.setAttribute('data-theme',S.theme); else document.documentElement.removeAttribute('data-theme'); }
+function toggleTheme(){
+  const isDark = S.theme ? S.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  S.theme = isDark?'light':'dark'; save(); applyTheme(); render();
+}
+applyTheme();
+
+/* =========================================================
+   NAV / ROUTER
+   ========================================================= */
+const ICONS={
+home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+learn:'<path d="M2 5h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/>',
+sim:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>',
+quiz:'<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+tools:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2"/>',
+gloss:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+cards:'<rect x="2" y="6" width="16" height="14" rx="2"/><path d="M6 2h14a2 2 0 0 1 2 2v12"/>'
+};
+const ROUTES=[['home','Home','home'],['learn','Lessons','learn'],['sim','Simulator','sim'],['quiz','Quick Quiz','quiz'],['tools','Tools','tools'],['glossary','Glossary','gloss'],['cards','Flashcards','cards']];
+function ico(n){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>`}
+function buildNav(){
+  const side=document.getElementById('sideNav');
+  side.querySelectorAll('.nav-btn,.spacer').forEach(e=>e.remove());
+  ROUTES.forEach(([r,label,ic])=>{const b=document.createElement('button');b.className='nav-btn';b.dataset.r=r;b.innerHTML=ico(ic)+label;b.onclick=()=>go(r);side.appendChild(b);});
+  const sp=document.createElement('div');sp.className='spacer';side.appendChild(sp);
+  const tb=document.createElement('button');tb.className='nav-btn theme-btn';tb.innerHTML='◐ Toggle theme';tb.onclick=toggleTheme;side.appendChild(tb);
+  const mob=document.getElementById('mobNav');mob.innerHTML='';
+  ROUTES.filter(r=>r[0]!=='glossary').forEach(([r,label,ic])=>{const b=document.createElement('button');b.dataset.r=r;b.innerHTML=ico(ic)+label.split(' ')[0];b.onclick=()=>go(r);mob.appendChild(b);});
+}
+function go(r){location.hash=r;}
+window.addEventListener('hashchange',render);
+const V=document.getElementById('view');
+function render(){
+  stopAuto();
+  const h=(location.hash.slice(1)||'home'); const [r,arg]=h.split('/');
+  document.querySelectorAll('[data-r]').forEach(b=>b.classList.toggle('active', b.dataset.r===r || (r==='lesson'&&b.dataset.r==='learn')));
+  window.scrollTo(0,0);
+  ({home:viewHome,learn:viewLearn,lesson:()=>viewLesson(arg),sim:viewSim,quiz:viewQuiz,tools:viewTools,glossary:viewGlossary,cards:viewCards}[r]||viewHome)();
+}
+
+/* =========================================================
+   VIEWS
+   ========================================================= */
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function nextLesson(){return ALL.find(x=>!S.done[x.id]);}
+
+function viewHome(){
+  const n=Object.keys(S.done).length, nx=nextLesson();
+  V.innerHTML=`
+  <h1>Welcome to TradePocket</h1>
+  <p class="sub">Your offline stock trading course &mdash; from first share to professional risk management.</p>
+  <div class="grid g4">
+    <div class="card stat"><div class="k">Rank</div><div class="v" style="font-size:19px">${rank()}</div></div>
+    <div class="card stat"><div class="k">Lessons done</div><div class="v">${n} / ${ALL.length}</div></div>
+    <div class="card stat"><div class="k">XP</div><div class="v">${S.xp}</div></div>
+    <div class="card stat"><div class="k">Day streak</div><div class="v">${S.streak.count} 🔥</div></div>
+  </div>
+  ${nx?`<div class="card" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <div><div class="pill">${nx.level.name}</div><h3 style="margin:6px 0 0">Up next: ${esc(nx.title)}</h3><div class="sub" style="margin:0">${nx.mins} min read + 3 question quiz</div></div>
+    <button class="btn primary" onclick="go('lesson/${nx.id}')">${n?'Continue':'Start learning'} →</button></div>`
+  :`<div class="card" style="margin-top:14px"><h3 style="margin:0">🏆 Course complete!</h3><p class="sub" style="margin:4px 0 0">Keep sharp with the Simulator, Quick Quiz and Flashcards.</p></div>`}
+  <h2>Your path</h2>
+  <div class="grid g4">${LEVELS.map((l,i)=>{const p=levelProgress(l);return `
+    <div class="card" style="cursor:pointer" onclick="go('learn')">
+      <div class="row" style="justify-content:space-between"><b>${i+1}. ${l.name}</b><span class="pill">${p.d}/${p.t}</span></div>
+      <div class="sub" style="margin:4px 0 10px;font-size:13px">${l.tag}</div>
+      <div class="bar"><i style="width:${p.d/p.t*100}%;background:${l.color}"></i></div></div>`}).join('')}</div>
+  <h2>Practice</h2>
+  <div class="grid g3">
+    <div class="card"><b>📈 Paper-trading simulator</b><p class="sub" style="margin:6px 0 12px;font-size:14px">Trade realistic random charts candle by candle with $10,000 of virtual money.</p><button class="btn" onclick="go('sim')">Open simulator</button></div>
+    <div class="card"><b>❓ Quick Quiz</b><p class="sub" style="margin:6px 0 12px;font-size:14px">10 random questions from across the course. Best: ${S.quizBest}/10</p><button class="btn" onclick="go('quiz')">Take a quiz</button></div>
+    <div class="card"><b>🧮 Trading calculators</b><p class="sub" style="margin:6px 0 12px;font-size:14px">Position size, risk/reward, expectancy and compound growth.</p><button class="btn" onclick="go('tools')">Open tools</button></div>
+  </div>
+  <p class="disclaimer">TradePocket is for education only and is not financial advice. Trading involves risk of loss. Your progress is saved in this browser on this device. <a href="#" onclick="resetAll();return false">Reset progress</a></p>`;
+}
+function resetAll(){ if(confirm('Reset all progress, XP and simulator records?')){S=structuredClone(defaultState);save();applyTheme();render();} }
+
+function viewLearn(){
+  V.innerHTML=`<h1>Lessons</h1><p class="sub">${ALL.length} lessons in 4 levels. Pass each quiz (2 of 3 correct) to complete the lesson.</p>`+
+  LEVELS.map((l,li)=>{const p=levelProgress(l);return `
+    <div class="level-head"><div class="level-badge" style="background:${l.color}">${li+1}</div>
+      <div style="flex:1"><b style="font-size:17px">${l.name}</b><div class="sub" style="margin:0;font-size:13px">${l.tag} &middot; ${p.d}/${p.t} complete</div></div></div>
+    <div class="lesson-list">${l.lessons.map((x,i)=>`
+      <button class="lesson-item ${S.done[x.id]?'done':''}" onclick="go('lesson/${x.id}')">
+        <span class="num">${S.done[x.id]?'✓':i+1}</span>
+        <span class="t"><b>${esc(x.title)}</b><div class="m">${x.mins} min${S.done[x.id]?` &middot; quiz ${S.done[x.id]}/3`:''}</div></span>
+        <span class="m">›</span></button>`).join('')}</div>`}).join('');
+}
+
+function viewLesson(id){
+  const i=ALL.findIndex(x=>x.id===id); if(i<0) return viewLearn();
+  const x=ALL[i], prev=ALL[i-1], next=ALL[i+1];
+  V.innerHTML=`<article class="lesson">
+    <button class="btn" onclick="go('learn')" style="margin-bottom:14px">← All lessons</button>
+    <div class="pill" style="color:#fff;background:${x.level.color}">${x.level.name}</div>
+    <h1 style="margin-top:8px">${esc(x.title)}</h1>
+    <p class="sub">${x.mins} min read</p>
+    ${x.body}
+    <div class="keys"><h3>Key takeaways</h3><ul>${x.keys.map(k=>`<li>${esc(k)}</li>`).join('')}</ul></div>
+    <h2>Check your understanding</h2>
+    <div class="quiz" id="quiz"></div>
+    <div id="quizResult"></div>
+    <div class="lesson-nav">
+      ${prev?`<button class="btn" onclick="go('lesson/${prev.id}')">← ${esc(prev.title)}</button>`:'<span></span>'}
+      ${next?`<button class="btn primary" onclick="go('lesson/${next.id}')">${esc(next.title)} →</button>`:`<button class="btn primary" onclick="go('home')">Finish 🏆</button>`}
+    </div></article>`;
+  runQuiz(document.getElementById('quiz'), x.quiz, score=>{
+    const prevScore=S.done[x.id]||0; const passed=score>=2;
+    if(passed && score>prevScore){ if(!prevScore) addXP(50); addXP((score-prevScore)*10); S.done[x.id]=score; save(); }
+    else touchStreak();
+    document.getElementById('quizResult').innerHTML=`<div class="result">${passed?'✅':'↻'} You scored <b>${score}/3</b>. ${passed?(prevScore?'Lesson complete.':'Lesson complete! +XP earned.'):'Score 2 or more to complete this lesson. Review and try again.'}
+      ${!passed?` <button class="btn" style="margin-left:8px" onclick="viewLesson('${x.id}')">Retry quiz</button>`:''}</div>`;
+  });
+}
+
+function runQuiz(el, qs, onDone){
+  let answered=0, score=0;
+  el.innerHTML=qs.map((q,qi)=>`<div class="q">${qi+1}. ${esc(q.q)}</div>
+    <div data-q="${qi}">${q.o.map((o,oi)=>`<button class="opt" data-o="${oi}">${esc(o)}</button>`).join('')}</div><div class="explain" id="ex${qi}"></div>`).join('');
+  el.querySelectorAll('[data-q]').forEach(box=>{
+    const qi=+box.dataset.q, q=qs[qi];
+    box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const oi=+b.dataset.o; box.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+      box.children[q.a].classList.add('right'); if(oi!==q.a) b.classList.add('wrong'); else score++;
+      el.querySelector('#ex'+qi).textContent=(oi===q.a?'Correct. ':'Not quite. ')+q.e;
+      if(++answered===qs.length) onDone(score);
+    });
+  });
+}
+
+/* ---------- Quick Quiz ---------- */
+function viewQuiz(){
+  const pool=ALL.flatMap(l=>l.quiz.map(q=>({...q,from:l.title})));
+  const qs=shuffle(pool).slice(0,10);
+  V.innerHTML=`<h1>Quick Quiz</h1><p class="sub">10 random questions from all levels. Best score: ${S.quizBest}/10</p>
+  <div class="quiz card" id="qq"></div><div id="qqr"></div>`;
+  runQuiz(document.getElementById('qq'),qs,score=>{
+    if(score>S.quizBest){S.quizBest=score;} addXP(score*2);
+    document.getElementById('qqr').innerHTML=`<div class="result">You scored <b>${score}/10</b> (+${score*2} XP). <button class="btn primary" style="margin-left:8px" onclick="viewQuiz()">New quiz</button></div>`;
+  });
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ---------- Tools ---------- */
+let toolTab='size';
+function viewTools(){
+  const tabs=[['size','Position size'],['rr','Risk / reward'],['exp','Expectancy'],['comp','Compound growth']];
+  V.innerHTML=`<h1>Trading tools</h1><p class="sub">Calculators that turn the lessons into habits.</p>
+  <div class="tabs">${tabs.map(([k,n])=>`<button class="btn ${toolTab===k?'on':''}" onclick="toolTab='${k}';viewTools()">${n}</button>`).join('')}</div>
+  <div class="card" id="tool" style="max-width:560px"></div>`;
+  const T=document.getElementById('tool');
+  const f=(id,label,val,step='any')=>`<label class="f" for="${id}">${label}</label><input type="number" id="${id}" value="${val}" step="${step}">`;
+  const money=v=>isFinite(v)?'$'+v.toLocaleString(undefined,{maximumFractionDigits:2}):'—';
+  if(toolTab==='size'){
+    T.innerHTML=`<b>Position size calculator</b>${f('acc','Account size ($)',10000)}${f('rp','Risk per trade (%)',1)}${f('en','Entry price',50)}${f('st','Stop-loss price',48)}<div class="result" id="out"></div>`;
+    const calc=()=>{const a=+acc.value,r=+rp.value/100,e=+en.value,s=+st.value;const rps=Math.abs(e-s);const risk=a*r;const sh=rps>0?Math.floor(risk/rps):0;
+      out.innerHTML=rps>0?`Buy <b>${sh.toLocaleString()}</b> shares<br>Position value: ${money(sh*e)} (${(sh*e/a*100).toFixed(1)}% of account)<br>Max loss if stopped: ${money(sh*rps)}<br>Direction: ${s<e?'Long':'Short'}${sh*e>a?'<br><span class="neg">Position exceeds account: needs margin or a wider stop with fewer shares.</span>':''}`:'Stop must differ from entry.';};
+    T.oninput=calc;calc();
+  } else if(toolTab==='rr'){
+    T.innerHTML=`<b>Risk / reward calculator</b>${f('en','Entry price',50)}${f('st','Stop-loss price',48)}${f('tg','Target price',56)}<div class="result" id="out"></div>`;
+    const calc=()=>{const e=+en.value,s=+st.value,t=+tg.value;const risk=Math.abs(e-s),rew=Math.abs(t-e);const rr=rew/risk;
+      out.innerHTML=risk>0?`R:R = <b>${rr.toFixed(2)} : 1</b><br>Risk/share ${money(risk)} &middot; Reward/share ${money(rew)}<br>Break-even win rate: ${(100/(1+rr)).toFixed(1)}%<br>${rr>=2?'<span class="pos">Good asymmetry.</span>':'<span class="neg">Below 2:1, you need a high win rate.</span>'}`:'Stop must differ from entry.';};
+    T.oninput=calc;calc();
+  } else if(toolTab==='exp'){
+    T.innerHTML=`<b>Expectancy calculator</b>${f('wr','Win rate (%)',45)}${f('aw','Average win ($)',300)}${f('al','Average loss ($)',100)}${f('nt','Number of trades',100,1)}<div class="result" id="out"></div>`;
+    const calc=()=>{const w=+wr.value/100,W=+aw.value,L=Math.abs(+al.value),n=+nt.value;const ex=w*W-(1-w)*L;const R=L>0?W/L:0;const kelly=R>0?w-(1-w)/R:0;
+      out.innerHTML=`Expectancy: <b class="${ex>=0?'pos':'neg'}">${money(ex)}</b> per trade<br>Over ${n} trades: ${money(ex*n)}<br>Payoff ratio: ${R.toFixed(2)}<br>Full Kelly: ${(kelly*100).toFixed(1)}% (use a small fraction or fixed 0.5–1%)`;};
+    T.oninput=calc;calc();
+  } else {
+    T.innerHTML=`<b>Compound growth</b>${f('p0','Starting amount ($)',1000)}${f('pm','Monthly contribution ($)',100)}${f('ar','Annual return (%)',8)}${f('yr','Years',20,1)}<div class="result" id="out"></div><canvas id="cg" height="160" style="margin-top:12px"></canvas>`;
+    const calc=()=>{const P=+p0.value,m=+pm.value,r=+ar.value/100/12,y=Math.min(80,Math.max(0,+yr.value));let v=P,inv=P;const pts=[v],ip=[inv];
+      for(let i=1;i<=y*12;i++){v=v*(1+r)+m;inv+=m;if(i%12===0){pts.push(v);ip.push(inv);}}
+      out.innerHTML=`Final value: <b>${money(v)}</b><br>Total contributed: ${money(inv)}<br>Growth from returns: <span class="pos">${money(v-inv)}</span>`;
+      drawLine(document.getElementById('cg'),[pts,ip]);};
+    T.oninput=calc;calc();
+  }
+}
+function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function drawLine(c,series){
+  const dpr=devicePixelRatio||1,w=c.clientWidth,h=160;c.width=w*dpr;c.height=h*dpr;const g=c.getContext('2d');g.scale(dpr,dpr);g.clearRect(0,0,w,h);
+  const max=Math.max(...series.flat())||1,n=series[0].length;const cols=[cssv('--accent'),cssv('--muted')];
+  series.forEach((s,k)=>{g.beginPath();s.forEach((v,i)=>{const x=6+i/(Math.max(1,n-1))*(w-12),y=h-8-v/max*(h-16);i?g.lineTo(x,y):g.moveTo(x,y);});g.strokeStyle=cols[k];g.lineWidth=k?1.5:2.5;if(k)g.setLineDash([4,4]);g.stroke();g.setLineDash([]);});
+  g.fillStyle=cssv('--muted');g.font='11px system-ui';g.fillText('— value   - - contributed',8,14);
+}
+
+/* ---------- Glossary ---------- */
+function viewGlossary(){
+  V.innerHTML=`<h1>Glossary</h1><p class="sub">${GLOSSARY.length} essential trading terms.</p>
+  <input id="gs" placeholder="Search terms…" style="max-width:420px;margin-bottom:10px"><div id="gl" class="card"></div>`;
+  const draw=()=>{const q=gs.value.toLowerCase();const items=GLOSSARY.filter(([t,d])=>(t+d).toLowerCase().includes(q));
+    gl.innerHTML=items.length?items.map(([t,d])=>`<div class="gl-item"><b>${esc(t)}</b><span class="sub">${esc(d)}</span></div>`).join(''):'<p class="sub">No matches.</p>';};
+  gs.oninput=draw;draw();
+}
+
+/* ---------- Flashcards ---------- */
+let deck=[],di=0;
+function viewCards(){
+  const known=Object.values(S.cards).filter(v=>v>=2).length;
+  // weight unknown cards first
+  deck=shuffle(GLOSSARY).sort((a,b)=>(S.cards[a[0]]||0)-(S.cards[b[0]]||0));di=0;
+  V.innerHTML=`<h1>Flashcards</h1><p class="sub">Tap the card to flip. Mastered: <span id="mk">${known}</span> / ${GLOSSARY.length} &middot; <a href="#glossary">Browse full glossary</a></p>
+  <div class="flash" id="fc"><div class="flash-inner"><div class="flash-face front" id="ff"></div><div class="flash-face back" id="fb"></div></div></div>
+  <div class="row" style="justify-content:center;margin-top:18px">
+    <button class="btn down" id="again">Again</button><button class="btn up" id="gotit">Got it</button></div>
+  <p class="sub" style="text-align:center;margin-top:10px;font-size:13px" id="fcn"></p>`;
+  const show=()=>{fc.classList.remove('flipped');const [t,d]=deck[di%deck.length];setTimeout(()=>{ff.textContent=t;fb.textContent=d;},fc.classList.contains('flipped')?0:0);fcn.textContent=`Card ${di%deck.length+1} of ${deck.length}`;};
+  fc.onclick=()=>fc.classList.toggle('flipped');
+  const mark=d=>{const t=deck[di%deck.length][0];S.cards[t]=Math.max(0,(S.cards[t]||0)+d);if(d>0)addXP(1);else save();mk.textContent=Object.values(S.cards).filter(v=>v>=2).length;di++;show();};
+  gotit.onclick=()=>mark(1);again.onclick=()=>mark(-1);show();
+}
+
+/* =========================================================
+   SIMULATOR
+   ========================================================= */
+let sim=null, autoTimer=null;
+function stopAuto(){if(autoTimer){clearInterval(autoTimer);autoTimer=null;}}
+function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function genCandles(n){
+  const out=[];let p=40+Math.random()*120;let mu=0,vol=.015,left=0;
+  for(let i=0;i<n;i++){
+    if(left--<=0){left=20+Math.floor(Math.random()*50);mu=(Math.random()-.5)*.006;vol=.008+Math.random()*.018;}
+    const gap=Math.random()<.04?randn()*vol*2.5:randn()*vol*.15;
+    const o=p*(1+gap);const c=o*Math.exp(mu+randn()*vol);
+    const hi=Math.max(o,c)*(1+Math.abs(randn())*vol*.5);const lo=Math.min(o,c)*(1-Math.abs(randn())*vol*.5);
+    const v=Math.round((1e5+Math.random()*1e5)*(1+Math.abs(c/o-1)/vol*.8+Math.abs(gap)/vol*.6));
+    out.push({o,h:hi,l:lo,c,v});p=c;
+  }
+  return out;
+}
+const SIM_TOTAL=320, SIM_START=80, FEE=1;
+function newSim(){
+  sim={c:genCandles(SIM_TOTAL),i:SIM_START,cash:10000,pos:0,avg:0,stop:null,tp:null,log:[],trades:[],start:10000,
+       show:{s20:true,s50:true,rsi:false},ended:false};
+  sim.bh=sim.c[SIM_START].c;
+}
+function curPx(){return sim.c[sim.i].c;}
+function equity(){return sim.cash+sim.pos*curPx();}
+function sma(arr,n,i){if(i<n-1)return null;let s=0;for(let k=i-n+1;k<=i;k++)s+=arr[k].c;return s/n;}
+function rsi(arr,n,i){if(i<n)return null;let g=0,l=0;for(let k=i-n+1;k<=i;k++){const d=arr[k].c-arr[k-1].c;d>0?g+=d:l-=d;}if(l===0)return 100;const rs=(g/n)/(l/n);return 100-100/(1+rs);}
+function fmt(v){return (v<0?'-$':'$')+Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+function addLog(t,cls=''){sim.log.unshift({t:`#${sim.i-SIM_START} ${t}`,cls});}
+
+function execute(qty,price,reason){
+  if(!qty)return;
+  const before=sim.pos;let realized=0;
+  if(before!==0 && Math.sign(before)!==Math.sign(qty)){
+    const closeQty=Math.min(Math.abs(qty),Math.abs(before))*Math.sign(qty);
+    realized=(price-sim.avg)*(-closeQty);
+  }
+  sim.cash-=qty*price+FEE;
+  const after=before+qty;
+  if(after===0){sim.avg=0;sim.stop=null;sim.tp=null;const a=document.getElementById('stp'),b=document.getElementById('tpp');if(a)a.value='';if(b)b.value='';}
+  else if(before===0||Math.sign(before)!==Math.sign(after)){sim.avg=price;}
+  else if(Math.abs(after)>Math.abs(before)){sim.avg=(sim.avg*Math.abs(before)+price*Math.abs(qty))/Math.abs(after);}
+  sim.pos=after;
+  if(realized!==0||(before!==0&&Math.sign(before)!==Math.sign(qty))){sim.trades.push(realized-FEE);}
+  const side=qty>0?(before<0?'COVER':'BUY'):(before>0?'SELL':'SHORT');
+  addLog(`${side} ${Math.abs(qty)} @ ${price.toFixed(2)}${reason?' ('+reason+')':''}${realized?` P&L ${fmt(realized)}`:''}`, realized>0?'pos':realized<0?'neg':'');
+}
+function step(){
+  if(sim.ended)return;
+  if(sim.i>=SIM_TOTAL-1){endSim();return;}
+  sim.i++;const k=sim.c[sim.i];
+  if(sim.pos>0){
+    if(sim.stop!=null&&k.l<=sim.stop) execute(-sim.pos,Math.min(k.o,sim.stop),'stop');
+    else if(sim.tp!=null&&k.h>=sim.tp) execute(-sim.pos,Math.max(k.o,sim.tp),'target');
+  } else if(sim.pos<0){
+    if(sim.stop!=null&&k.h>=sim.stop) execute(-sim.pos,Math.max(k.o,sim.stop),'stop');
+    else if(sim.tp!=null&&k.l<=sim.tp) execute(-sim.pos,Math.min(k.o,sim.tp),'target');
+  }
+  if(sim.i>=SIM_TOTAL-1) endSim(); else updateSim();
+}
+function endSim(){
+  stopAuto();
+  if(sim.pos) execute(-sim.pos,curPx(),'end');
+  sim.ended=true;
+  const ret=(equity()/sim.start-1)*100, bh=(curPx()/sim.bh-1)*100;
+  S.sim.runs++; if(S.sim.best==null||ret>S.sim.best)S.sim.best=+ret.toFixed(2); addXP(20);
+  updateSim();
+  const wins=sim.trades.filter(x=>x>0).length;
+  document.getElementById('simEnd').innerHTML=`<div class="result"><b>Session over.</b><br>Your return: <b class="${ret>=0?'pos':'neg'}">${ret.toFixed(2)}%</b> &nbsp; Buy &amp; hold: ${bh.toFixed(2)}%<br>
+  Closed trades: ${sim.trades.length} &middot; Win rate: ${sim.trades.length?(wins/sim.trades.length*100).toFixed(0):0}% &middot; Fees paid: ${fmt(sim.log.filter(l=>/BUY|SELL|SHORT|COVER/.test(l.t)).length*FEE)}<br>
+  <button class="btn primary" style="margin-top:8px" onclick="newSim();viewSim()">New chart</button></div>`;
+}
+function viewSim(){
+  if(!sim)newSim();
+  V.innerHTML=`<h1>Paper-trading simulator</h1><p class="sub">A randomly generated stock. Step forward one candle at a time, trade at the close, and practise stops and sizing. $1 fee per order. ${S.sim.best!=null?`Best return: ${S.sim.best}% over ${S.sim.runs} sessions.`:''}</p>
+  <div class="sim-wrap">
+    <div>
+      <div class="chart-box"><canvas id="cv" height="420"></canvas></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" id="bNext">Next candle ▶</button>
+        <button class="btn" id="bAuto">Auto ▶▶</button>
+        <button class="btn" onclick="newSim();viewSim()">New chart</button>
+        <span style="flex:1"></span>
+        <label class="toggle"><input type="checkbox" id="t20" ${sim.show.s20?'checked':''}> SMA 20</label>
+        <label class="toggle"><input type="checkbox" id="t50" ${sim.show.s50?'checked':''}> SMA 50</label>
+        <label class="toggle"><input type="checkbox" id="trsi" ${sim.show.rsi?'checked':''}> RSI 14</label>
+      </div>
+      <div id="simEnd"></div>
+    </div>
+    <div class="card">
+      <div class="kv"><span>Price</span><span id="sPx"></span></div>
+      <div class="kv"><span>Cash</span><span id="sCash"></span></div>
+      <div class="kv"><span>Position</span><span id="sPos"></span></div>
+      <div class="kv"><span>Avg price</span><span id="sAvg"></span></div>
+      <div class="kv"><span>Open P&amp;L</span><span id="sOpen"></span></div>
+      <div class="kv"><span>Equity</span><span id="sEq"></span></div>
+      <div class="kv"><span>Candle</span><span id="sCnt"></span></div>
+      <label class="f" for="qty">Quantity (shares)</label>
+      <div class="row" style="flex-wrap:nowrap"><input type="number" id="qty" value="50" min="1"><button class="btn" id="bMax" title="Max shares with cash">Max</button></div>
+      <div class="grid g2" style="margin-top:10px"><button class="btn up" id="bBuy">Buy</button><button class="btn down" id="bSell">Sell / Short</button></div>
+      <button class="btn" id="bFlat" style="width:100%;margin-top:8px">Close position</button>
+      <label class="f" for="stp">Stop-loss price</label><input type="number" id="stp" step="0.01" placeholder="none">
+      <label class="f" for="tpp">Take-profit price</label><input type="number" id="tpp" step="0.01" placeholder="none">
+      <button class="btn" id="bSet" style="width:100%;margin-top:8px">Set stop / target</button>
+      <div id="sRisk" class="sub" style="font-size:12.5px;margin:6px 0 0"></div>
+      <h3 style="margin-top:14px">Trade log</h3><div class="log" id="sLog"></div>
+    </div>
+  </div>`;
+  bNext.onclick=step;
+  bAuto.onclick=()=>{if(autoTimer){stopAuto();bAuto.textContent='Auto ▶▶';}else{autoTimer=setInterval(step,350);bAuto.textContent='Pause ❚❚';}};
+  t20.onchange=e=>{sim.show.s20=e.target.checked;drawChart();};
+  t50.onchange=e=>{sim.show.s50=e.target.checked;drawChart();};
+  trsi.onchange=e=>{sim.show.rsi=e.target.checked;drawChart();};
+  const q=()=>Math.max(1,Math.floor(+qty.value||0));
+  bMax.onclick=()=>{qty.value=Math.max(1,Math.floor(Math.max(0,equity()-FEE)/curPx()));};
+  bBuy.onclick=()=>{if(sim.ended)return;const n=q();if(sim.pos>=0&&n*curPx()+FEE>sim.cash){alert('Not enough cash for that many shares. Use Max or lower the quantity.');return;}execute(n,curPx());updateSim();};
+  bSell.onclick=()=>{if(sim.ended)return;const n=q();if(sim.pos<=0&&Math.abs(sim.pos-n)*curPx()>equity()){alert('Short too large: short exposure is limited to your equity in this simulator.');return;}execute(-n,curPx());updateSim();};
+  bFlat.onclick=()=>{if(sim.ended||!sim.pos)return;execute(-sim.pos,curPx(),'manual');updateSim();};
+  bSet.onclick=()=>{
+    if(!sim.pos){alert('Open a position first.');return;}
+    const s=stp.value===''?null:+stp.value,t=tpp.value===''?null:+tpp.value,px=curPx();
+    if(sim.pos>0&&((s!=null&&s>=px)||(t!=null&&t<=px))){alert('For a long position the stop must be below price and the target above.');return;}
+    if(sim.pos<0&&((s!=null&&s<=px)||(t!=null&&t>=px))){alert('For a short position the stop must be above price and the target below.');return;}
+    sim.stop=s;sim.tp=t;addLog(`Set stop ${s??'—'} / target ${t??'—'}`);updateSim();};
+  window.onresize=()=>{if(document.getElementById('cv'))drawChart();};
+  updateSim();
+  if(sim.ended) document.getElementById('simEnd').innerHTML=`<div class="result">Session over. <button class="btn primary" onclick="newSim();viewSim()">New chart</button></div>`;
+}
+function updateSim(){
+  if(!document.getElementById('cv'))return;
+  const px=curPx(),eq=equity(),open=sim.pos?(px-sim.avg)*sim.pos:0;
+  sPx.textContent=px.toFixed(2);sCash.textContent=fmt(sim.cash);
+  sPos.textContent=sim.pos?`${sim.pos>0?'Long':'Short'} ${Math.abs(sim.pos)}`:'Flat';
+  sAvg.textContent=sim.pos?sim.avg.toFixed(2):'—';
+  sOpen.textContent=fmt(open);sOpen.className=open>0?'pos':open<0?'neg':'';
+  const r=(eq/sim.start-1)*100;sEq.innerHTML=`${fmt(eq)} <small class="${r>=0?'pos':'neg'}">(${r>=0?'+':''}${r.toFixed(2)}%)</small>`;
+  sCnt.textContent=`${sim.i-SIM_START} / ${SIM_TOTAL-1-SIM_START}`;
+  sRisk.innerHTML=sim.pos&&sim.stop!=null?`Risk to stop: ${fmt(Math.abs(sim.avg-sim.stop)*Math.abs(sim.pos))} (${(Math.abs(sim.avg-sim.stop)*Math.abs(sim.pos)/eq*100).toFixed(2)}% of equity)`:(sim.pos?'<span class="neg">No stop set: your risk is undefined.</span>':'');
+  sLog.innerHTML=sim.log.map(l=>`<div class="${l.cls}">${esc(l.t)}</div>`).join('')||'<span class="sub">No trades yet.</span>';
+  [bNext,bAuto,bBuy,bSell,bFlat,bSet].forEach(b=>b.disabled=sim.ended);
+  drawChart();
+}
+function drawChart(){
+  const c=document.getElementById('cv');if(!c)return;
+  const dpr=devicePixelRatio||1,W=c.clientWidth,H=c.clientWidth<500?340:420;c.style.height=H+'px';c.width=W*dpr;c.height=H*dpr;
+  const g=c.getContext('2d');g.scale(dpr,dpr);
+  const up=cssv('--up'),dn=cssv('--down'),mu=cssv('--muted'),ln=cssv('--line'),tx=cssv('--text');
+  const nVis=Math.max(30,Math.min(100,Math.floor((W-60)/7)));
+  const from=Math.max(0,sim.i-nVis+1),data=sim.c.slice(from,sim.i+1);
+  const rsiH=sim.show.rsi?70:0,volH=55,padR=56,top=10;
+  const priceH=H-volH-rsiH-24-top;
+  let hi=-Infinity,lo=Infinity;data.forEach(k=>{hi=Math.max(hi,k.h);lo=Math.min(lo,k.l);});
+  [sim.stop,sim.tp,sim.pos?sim.avg:null].forEach(v=>{if(v!=null){hi=Math.max(hi,v);lo=Math.min(lo,v);}});
+  const pad=(hi-lo)*.06;hi+=pad;lo-=pad;
+  const y=v=>top+(hi-v)/(hi-lo)*priceH;
+  const cw=(W-padR-8)/nVis,bw=Math.max(1.5,cw*.65);
+  const x=i=>8+(i+.5)*cw;
+  g.font='11px system-ui';g.lineWidth=1;
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4,yy=y(v);g.strokeStyle=ln;g.beginPath();g.moveTo(8,yy);g.lineTo(W-padR,yy);g.stroke();g.fillStyle=mu;g.fillText(v.toFixed(2),W-padR+6,yy+4);}
+  data.forEach((k,i)=>{const col=k.c>=k.o?up:dn;g.strokeStyle=col;g.fillStyle=col;g.beginPath();g.moveTo(x(i),y(k.h));g.lineTo(x(i),y(k.l));g.stroke();
+    const yt=y(Math.max(k.o,k.c)),yb=y(Math.min(k.o,k.c));g.fillRect(x(i)-bw/2,yt,bw,Math.max(1,yb-yt));});
+  const ma=(n,col)=>{g.strokeStyle=col;g.lineWidth=1.6;g.beginPath();let st=false;data.forEach((k,i)=>{const v=sma(sim.c,n,from+i);if(v==null)return;st?g.lineTo(x(i),y(v)):g.moveTo(x(i),y(v));st=true;});g.stroke();g.lineWidth=1;};
+  if(sim.show.s20)ma(20,'#f59e0b');if(sim.show.s50)ma(50,'#a855f7');
+  const hl=(v,col,label)=>{if(v==null)return;g.setLineDash([5,4]);g.strokeStyle=col;g.beginPath();g.moveTo(8,y(v));g.lineTo(W-padR,y(v));g.stroke();g.setLineDash([]);g.fillStyle=col;g.fillText(label,10,y(v)-4);};
+  if(sim.pos)hl(sim.avg,mu,'Entry '+sim.avg.toFixed(2));hl(sim.stop,dn,'Stop '+(sim.stop??0).toFixed(2));hl(sim.tp,up,'Target '+(sim.tp??0).toFixed(2));
+  const last=data[data.length-1];g.fillStyle=last.c>=last.o?up:dn;g.fillRect(W-padR+2,y(last.c)-8,padR-4,16);g.fillStyle='#fff';g.fillText(last.c.toFixed(2),W-padR+6,y(last.c)+4);
+  // volume
+  const vTop=top+priceH+12,vmax=Math.max(...data.map(k=>k.v));
+  data.forEach((k,i)=>{const h=k.v/vmax*(volH-6);g.globalAlpha=.55;g.fillStyle=k.c>=k.o?up:dn;g.fillRect(x(i)-bw/2,vTop+volH-h,bw,h);});g.globalAlpha=1;
+  g.fillStyle=mu;g.fillText('Volume',10,vTop+10);
+  if(sim.show.s20||sim.show.s50){let lx=70;if(sim.show.s20){g.fillStyle='#f59e0b';g.fillText('SMA20',lx,vTop+10);lx+=48;}if(sim.show.s50){g.fillStyle='#a855f7';g.fillText('SMA50',lx,vTop+10);}}
+  if(sim.show.rsi){
+    const rTop=vTop+volH+8,ry=v=>rTop+(100-v)/100*(rsiH-6);
+    g.strokeStyle=ln;[30,70].forEach(v=>{g.setLineDash([3,3]);g.beginPath();g.moveTo(8,ry(v));g.lineTo(W-padR,ry(v));g.stroke();g.setLineDash([]);g.fillStyle=mu;g.fillText(v,W-padR+6,ry(v)+4);});
+    g.strokeStyle=cssv('--accent');g.lineWidth=1.5;g.beginPath();let st=false;data.forEach((k,i)=>{const v=rsi(sim.c,14,from+i);if(v==null)return;st?g.lineTo(x(i),ry(v)):g.moveTo(x(i),ry(v));st=true;});g.stroke();g.lineWidth=1;
+    const rv=rsi(sim.c,14,sim.i);g.fillStyle=mu;g.fillText('RSI 14: '+(rv??0).toFixed(1),10,rTop+8);
+  }
+  g.fillStyle=tx;
+}
+
+/* ---------- boot ---------- */
+buildNav();render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
